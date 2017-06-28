@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/listViewItem"
+    android:layout_width="match_parent"
+    android:background="@android:drawable/list_selector_background">
+
+    <View
+        android:id="@+id/ngangitem_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lvDividerHeight"
+        android:layout_alignParentBottom="true"
+        android:background="@color/lvDividerColor" />
+
+    <ImageView
+        android:id="@+id/imgDeleteDevice"
+        style="@style/listViewItemButtonStyle"
+        android:layout_height="56dp"
+        android:layout_width="56dp"
+        android:padding="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:background="@android:drawable/list_selector_background"
+        android:clickable="true"
+        android:src="@mipmap/ic_remove" />
+    <View
+        android:id="@+id/duongdocvertical_divider"
+        style="@style/listViewVerticalDivider"
+        android:layout_height="fill_parent"
+        android:layout_toLeftOf="@id/imgDeleteDevice" />
+
+    <ToggleButton
+        android:id="@+id/chkState"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_toLeftOf="@id/duongdocvertical_divider"
+        android:background="@drawable/toggle_selector_oval"
+        android:checked="false"
+        android:padding="6dp"
+        android:textOff=""
+        android:textOn="" />
+
+    <TextView
+        android:id="@+id/tvNameDevice"
+        style="@style/listViewPrimaryDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@id/chkState"
+        android:ellipsize="marquee"
+        android:text="Name Device"
+        android:textIsSelectable="false" />
+
+
+    <TextView
+        android:id="@+id/tvDeviceId"
+        style="@style/listViewPrimaryDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/tvNameDevice"
+        android:layout_toLeftOf="@id/chkState"
+        android:text="DeviceIdItem" />
+    <TextView
+        android:id="@+id/defaultTv"
+        style="@style/listViewPrimaryDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/ngangitem_separator"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/tvDeviceId"
+        android:layout_toLeftOf="@id/chkState"
+        android:text="" />
+
+</RelativeLayout>
