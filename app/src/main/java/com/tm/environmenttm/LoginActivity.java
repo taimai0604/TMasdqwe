@@ -8,13 +8,25 @@ import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tm.environmenttm.adapter.CustomListDeviceAdapter;
 import com.tm.environmenttm.constant.ConstantFunction;
+import com.tm.environmenttm.constant.ConstantURL;
+import com.tm.environmenttm.controller.IRESTfull;
+import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.model.Account;
+import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.RealmTM;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.Realm;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = LoginActivity.class.getName();
@@ -54,6 +66,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private boolean checkLogin(String email, String password) {
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Call<List<Device>> call = iServices.getAllDevice();
+        call.enqueue(new Callback<List<Device>>() {
+            @Override
+            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
+                dataModels = response.body();
+                adapter = new CustomListDeviceAdapter(getContext(), dataModels);
+                lvDevices.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<Device>> call, Throwable t) {
+            }
+        });
         //test
         if(email.equals("taimai0604@gmail.com") && password.equals("123")) {
             return true;

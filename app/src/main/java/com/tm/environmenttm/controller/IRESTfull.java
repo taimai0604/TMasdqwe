@@ -1,5 +1,7 @@
 package com.tm.environmenttm.controller;
 
+import android.view.View;
+
 import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.model.Device;
 
@@ -17,7 +19,6 @@ public interface IRESTfull {
     //create account
 
     //check login
-
     //list device
     @GET(ConstantURL.GET_ALL_DEVICE)
     Call<List<Device>> getAllDevice();

@@ -25,13 +25,14 @@ import com.tm.environmenttm.fragment.InfoDeviceFragment;
 import com.tm.environmenttm.model.Device;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by taima on 06/27/2017.
  */
 
 public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements View.OnClickListener {
-    private ArrayList<Device> data;
+    private List<Device> data;
     private Context context;
 
     @Override
@@ -66,7 +67,7 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
         ToggleButton chkState;
     }
 
-    public CustomListDeviceAdapter(Context context, ArrayList<Device> data) {
+    public CustomListDeviceAdapter(Context context, List<Device> data) {
         super(context, R.layout.row_item_device, data);
         this.data = data;
         this.context = context;

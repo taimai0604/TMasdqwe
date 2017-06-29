@@ -9,14 +9,22 @@ import android.widget.ListView;
 
 import com.tm.environmenttm.R;
 import com.tm.environmenttm.adapter.CustomListDeviceAdapter;
+import com.tm.environmenttm.constant.ConstantURL;
+import com.tm.environmenttm.controller.IRESTfull;
+import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.model.Device;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DeviceFragment extends Fragment {
     private ListView lvDevices;
 
-    private ArrayList<Device> dataModels;
+    private List<Device> dataModels;
 
     private CustomListDeviceAdapter adapter;
 
@@ -27,20 +35,28 @@ public class DeviceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_device, container, false);
-        dataModels = new ArrayList<>();
-        Device device = new Device("asdasd", "asdasd", "bienhoa", true, 10.0, 11.1, "des", "asdasd", "asdasd");
-        Device device1 = new Device("123", "456", "bienhoa", false, 10.0, 11.1, "des", "asdasd", "asdasd");
-        Device device2 = new Device("321", "654", "bienhoa", true, 10.0, 11.1, "des", "asdasd", "asdasd");
-        dataModels.add(device);
-        dataModels.add(device1);
-        dataModels.add(device2);
-        adapter = new CustomListDeviceAdapter(view.getContext(), dataModels);
-
         lvDevices = (ListView) view.findViewById(R.id.lvDevices);
-        lvDevices.setAdapter(adapter);
+        loadDevices();
 
         return view;
     }
 
 
+    public void loadDevices(){
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Call<List<Device>> call = iServices.getAllDevice();
+        dataModels = new ArrayList<>();
+        call.enqueue(new Callback<List<Device>>() {
+            @Override
+            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
+                dataModels = response.body();
+                adapter = new CustomListDeviceAdapter(getContext(), dataModels);
+                lvDevices.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<Device>> call, Throwable t) {
+            }
+        });
+    }
 }
