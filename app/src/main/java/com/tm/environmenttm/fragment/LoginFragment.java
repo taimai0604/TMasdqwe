@@ -1,109 +1,119 @@
 package com.tm.environmenttm.fragment;
 
-import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.tm.environmenttm.CustomModel.ResponeUserLogin;
+import com.tm.environmenttm.Home;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.constant.ConstantFunction;
+import com.tm.environmenttm.constant.ConstantURL;
+import com.tm.environmenttm.controller.IRESTfull;
+import com.tm.environmenttm.controller.RetrofitClient;
+import com.tm.environmenttm.model.Account;
+import com.tm.environmenttm.model.RealmTM;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link LoginFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class LoginFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import io.realm.Realm;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class LoginFragment extends Fragment implements View.OnClickListener {
+    private TextView tvCreateAccount;
+    private EditText edEmail;
+    private EditText edPassword;
+    private Button btnLogin;
 
-    private OnFragmentInteractionListener mListener;
+
+    public Realm realm;
 
     public LoginFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        // manager fragment
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        TextView textView = (TextView) view.findViewById(R.id.tvCreateAccount);
+        SpannableString content = new SpannableString(getResources().getString(R.string.create_account));
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        textView.setText(content);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        tvCreateAccount = (TextView) view.findViewById(R.id.tvCreateAccount);
+        btnLogin = (Button) view.findViewById(R.id.btnLogin);
+        edEmail = (EditText) view.findViewById(R.id.edEmail);
+        edPassword = (EditText) view.findViewById(R.id.edPassword);
+
+        edEmail.setText("taimai0604@gmail.com");
+        edPassword.setText("0918367740");
+
+        //set action button
+        btnLogin.setOnClickListener(this);
+        tvCreateAccount.setOnClickListener(this);
+
+        if (ConstantFunction.isLogin()) {
+            Intent intent = new Intent(getContext(), Home.class);
+            startActivity(intent);
         }
+
+        return view;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvCreateAccount:
+                ConstantFunction.replaceFragment(getFragmentManager(), R.id.frgContentLogin, new CreateAccountFragment(), "create_account");
+                break;
+            case R.id.btnLogin:
+                String email = edEmail.getText().toString();
+                String password = edPassword.getText().toString();
+                checkLogin(email, password);
+                break;
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+
+    private void checkLogin(String email, String password) {
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Account account = new Account();
+        account.setEmail(email);
+        account.setPassword(password);
+        Call<ResponeUserLogin> call = iServices.checkLogin(account);
+        call.enqueue(new Callback<ResponeUserLogin>() {
+            @Override
+            public void onResponse(Call<ResponeUserLogin> call, Response<ResponeUserLogin> response) {
+                if (response.code() == 200) {
+                    RealmTM.INSTANT.addRealm(response.body().getUser());
+                    Intent intent = new Intent(getContext(),Home.class);
+                    startActivity(intent);
+                } else {
+                    ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponeUserLogin> call, Throwable t) {
+                ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+            }
+        });
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

@@ -1,10 +1,14 @@
 package com.tm.environmenttm.model;
 
+import java.io.Serializable;
+
+import io.realm.RealmObject;
+
 /**
  * Created by taima on 06/27/2017.
  */
 
-public class Type {
+public class Type extends RealmObject implements Serializable{
     private String id;
     private String nameType;
 

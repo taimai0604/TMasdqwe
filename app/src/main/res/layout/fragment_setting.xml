@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#aebec5"
-    android:fillViewport="true"
-    tools:context=".fenjuly.toggleexpandlayout.SettingCustomFragment">
+    android:fillViewport="true">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -71,7 +70,7 @@
                         android:text="Điều kiển đèn" />
 
                     <TextView
-                        android:id="@+id/NotificationControlLedState"
+                        android:id="@+id/tvLedControl"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/NotificationControlLed"

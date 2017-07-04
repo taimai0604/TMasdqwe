@@ -14,10 +14,10 @@ public class RetrofitClient {
 
     public static Retrofit getClient(String baseUrl) {
         if (retrofit==null) {
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+//            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+//            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-            httpClient.addInterceptor(logging);
+//            httpClient.addInterceptor(logging);
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)

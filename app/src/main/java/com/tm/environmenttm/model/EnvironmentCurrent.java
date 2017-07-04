@@ -7,16 +7,16 @@ import java.io.Serializable;
  */
 
 public class EnvironmentCurrent implements Serializable {
-    private int pa;
-    private int height;
-    private int la;
-    private int ld;
-    private int h;
-    private int t;
-    private int f;
-    private int k;
-    private int hi;
-    private int dp;
+    private int pa;//ap suat
+    private int height;//do cao
+    private int la;// do sang analog
+    private int ld;// do sang diagital
+    private int h;//do am
+    private int t;//nhiet do C
+    private int f;//nhiet do F
+    private int k;//nhieu do K
+    private int hi;//heat index
+    private int dp;//diem suong
 
     public EnvironmentCurrent(){
 

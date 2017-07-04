@@ -1,134 +1,81 @@
 package com.tm.environmenttm;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
-import com.tm.environmenttm.adapter.CustomListDeviceAdapter;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
-import com.tm.environmenttm.model.Account;
-import com.tm.environmenttm.model.Device;
+import com.tm.environmenttm.fragment.HomeFragment;
+import com.tm.environmenttm.fragment.LoginFragment;
 import com.tm.environmenttm.model.RealmTM;
+import com.tm.environmenttm.model.Type;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
+import io.realm.RealmObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = LoginActivity.class.getName();
+public class LoginActivity extends AppCompatActivity {
 
-    private EditText edEmail;
-    private EditText edPassword;
-    private Button btnLogin;
-
-
-    public Realm realm;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // manager fragment
+        fragmentManager = getSupportFragmentManager();
 
-        //set under line for textview
-        TextView textView = (TextView) findViewById(R.id.tvCreateAccount);
-        SpannableString content = new SpannableString(getResources().getString(R.string.create_account));
-        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        textView.setText(content);
+        // get list type Type
 
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        edEmail = (EditText) findViewById(R.id.edEmail);
-        edPassword = (EditText) findViewById(R.id.edPassword);
+        loadListTypeType();
 
-        edEmail.setText("taimai0604@gmail.com");
-        edPassword.setText("123");
-
-        //set action button
-        btnLogin.setOnClickListener(this);
-
-        if (isLogin()) {
-            Intent intent = new Intent(this, Home.class);
-            startActivity(intent);
+        FragmentManager fm = getSupportFragmentManager();
+        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
         }
+        Fragment first = new LoginFragment();
+        ConstantFunction.addFragment(fragmentManager,R.id.frgContentLogin,first,"first");
     }
 
-    private boolean checkLogin(String email, String password) {
+    private void loadListTypeType() {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
-        Call<List<Device>> call = iServices.getAllDevice();
-        call.enqueue(new Callback<List<Device>>() {
+        Call<List<Type>> call = iServices.getAllTypeDevice();
+        call.enqueue(new Callback<List<Type>>() {
             @Override
-            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
-                dataModels = response.body();
-                adapter = new CustomListDeviceAdapter(getContext(), dataModels);
-                lvDevices.setAdapter(adapter);
+            public void onResponse(Call<List<Type>> call, Response<List<Type>> response) {
+                if (response.code() == 200) {
+                    RealmTM.INSTANT.deleteAll(Type.class);
+                    List<Type> list = response.body();
+                    RealmTM.INSTANT.addListRealm(list);
+                }
             }
 
             @Override
-            public void onFailure(Call<List<Device>> call, Throwable t) {
+            public void onFailure(Call<List<Type>> call, Throwable t) {
             }
         });
-        //test
-        if(email.equals("taimai0604@gmail.com") && password.equals("123")) {
-            return true;
-        }else{
-            return false;
-        }
     }
-
-    private boolean isLogin() {
-        Account account = RealmTM.INSTANT.findOneAccountRealm();
-        if(account == null){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tvCreateAccount:
-                break;
-            case R.id.btnLogin:
-                String email = edEmail.getText().toString();
-                String password = edPassword.getText().toString();
-                if (checkLogin(email,password)) {
-                    //test
-                    Account account = new Account();
-                    account.setEmail(email);
-                    account.setPassword(password);
-                    account.setFullName("Mai Huu Tai");
-
-                    RealmTM.INSTANT.addAccountRealm(account);
-                    Intent intent = new Intent(this, Home.class);
-                    startActivity(intent);
-                }else{
-                    ConstantFunction.showToast(this,getResources().getString(R.string.login_fail));
-                }
-                break;
-        }
-    }
-
-
 
     @Override
     protected void onResume() {
         super.onResume();
-       if(isLogin()){
-           finish();
-       }
+        if (ConstantFunction.isLogin()) {
+            finish();
+        }else {
+            if(fragmentManager.getBackStackEntryCount() > 0) {
+                Fragment first = new LoginFragment();
+                ConstantFunction.replaceFragment(fragmentManager, R.id.frgContentLogin, first, "first");
+            }
+        }
     }
+
+
 }

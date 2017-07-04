@@ -1,14 +1,13 @@
 package com.tm.environmenttm;
 
+import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,15 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.Manifest;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
+import com.tm.environmenttm.constant.ConstantFunction;
+import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.fragment.DeviceFragment;
 import com.tm.environmenttm.fragment.HomeFragment;
-import com.tm.environmenttm.map.GPSTracker;
+import com.tm.environmenttm.fragment.LoginFragment;
+import com.tm.environmenttm.fragment.SettingFragment;
+import com.tm.environmenttm.fragment.StatictisFragment;
 import com.tm.environmenttm.map.TestMapFragment;
 import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.RealmTM;
@@ -32,7 +32,7 @@ import com.tm.environmenttm.model.RealmTM;
 import io.realm.Realm;
 
 public class Home extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener , OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener {
     private String TAG = this.getClass().getName();
 
     public Realm realm;
@@ -42,6 +42,11 @@ public class Home extends AppCompatActivity
     private FragmentTransaction fragmentTransaction;
     private Fragment frgContent;
     private String frgTag;
+
+    private TextView tvFullName;
+    private TextView tvEmail;
+
+    private boolean refresh = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +58,6 @@ public class Home extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -70,26 +66,27 @@ public class Home extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        tvFullName = (TextView) header.findViewById(R.id.tvFullName);
+        tvEmail = (TextView) header.findViewById(R.id.tvEmail);
 
         //get account
-        account = RealmTM.INSTANT.findOneAccountRealm();
+        account = (Account) RealmTM.INSTANT.findFirst(Account.class);
+
+
+        tvFullName.setText(account.getFullName());
+        tvEmail.setText(account.getEmail());
 
         // manager fragment
         fragmentManager = getSupportFragmentManager();
 
-        Fragment first = new HomeFragment();
-        addFragment(first, "first");
-
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-
-//        }
-
-        Log.d(TAG, "onCreate: " + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION));
-
-
-
+        FragmentManager fm = getSupportFragmentManager();
+        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
+        frgContent = new HomeFragment();
+        addFragment(frgContent, ConstantValue.FRG_HOME);
+        refresh = false;
     }
 
     @Override
@@ -124,6 +121,10 @@ public class Home extends AppCompatActivity
             frgTag = "map";
             frgContent = new TestMapFragment();
             replaceFragment(frgContent, frgTag);
+        } else if (id == R.id.nav_setting) {
+            frgTag = "setting";
+            frgContent = new SettingFragment();
+            replaceFragment(frgContent, frgTag);
         } else if (id == R.id.nav_logout) {
             RealmTM.INSTANT.logout();
             Intent intent = new Intent(this, LoginActivity.class);
@@ -146,34 +147,19 @@ public class Home extends AppCompatActivity
     private void replaceFragment(Fragment fragment, String tag) {
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frgContent, fragment, tag);
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            googleMap.setMyLocationEnabled(true);
+    protected void onResume() {
+        super.onResume();
+        if (!ConstantFunction.isLogin()) {
+            finish();
         } else {
-            // Show rationale and request permission.
-        }
-        GPSTracker gps = new GPSTracker(this);
-
-        if (gps.canGetLocation()) {
-//            Log.d("toadoLAgps==", "" + latitude);
-            double latitude = gps.getLatitude();
-            double longitude = gps.getLongitude();
-//            Log.d("toadoLONgps==", "" + longitude);
-//            String lati = latitude + "";
-//            String loti = longitude + "";
-//            createSessionVITRIGPS(lati, loti);
-            Toast.makeText(
-                    this,
-                    "Your Location is -\nLat: " + latitude + "\nLong: "
-                            + longitude, Toast.LENGTH_LONG).show();
-        } else {
-            gps.showSettingsAlert();
+            if (refresh) {
+                replaceFragment(new HomeFragment(), ConstantValue.FRG_HOME);
+            }
+            refresh = true;
         }
     }
 }

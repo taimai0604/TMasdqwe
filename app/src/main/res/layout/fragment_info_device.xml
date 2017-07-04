@@ -27,21 +27,21 @@
                 android:src="@mipmap/ic_tag" />
 
             <TextView
-                android:id="@+id/tvNameDevice"
+                android:id="@+id/edNameDevice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/ivContactItem3"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="PhotonSoldCounter"
+                android:text="@string/default_text_view"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvNameDevice"
+                android:layout_below="@id/edNameDevice"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivContactItem3"
@@ -76,7 +76,7 @@
                 android:layout_toEndOf="@id/ivContactItem4"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Photon"
+                android:text="@string/default_text_view"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
@@ -123,21 +123,21 @@
                 android:src="@mipmap/ic_key" />
 
             <TextView
-                android:id="@+id/tvDeviceId"
+                android:id="@+id/edDeviceId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/ivContactItem1"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="2e0027001247343339383037"
+                android:text="@string/default_text_view"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvDeviceId"
+                android:layout_below="@id/edDeviceId"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivContactItem1"
@@ -177,21 +177,21 @@
                 android:src="@mipmap/ic_location" />
 
             <TextView
-                android:id="@+id/tvLocation"
+                android:id="@+id/edLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/ivContactItem5"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="202 Park Street, Los Angeles"
+                android:text="@string/default_text_view"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvLocation"
+                android:layout_below="@id/edLocation"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivContactItem5"
@@ -232,21 +232,21 @@
                 android:src="@mipmap/ic_key" />
 
             <TextView
-                android:id="@+id/tvKeyThingspeak"
+                android:id="@+id/edKeyThingspeak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/imgKeyThingspeak"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="FYQOFWDRQ9JKGBFE"
+                android:text="@string/default_text_view"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvKeyThingspeak"
+                android:layout_below="@id/edKeyThingspeak"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/imgKeyThingspeak"

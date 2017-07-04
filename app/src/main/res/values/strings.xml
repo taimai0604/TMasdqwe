@@ -5,6 +5,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_real_time">Real time</string>
+    <string name="action_control">Control</string>
     <!--login-->
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -13,20 +15,50 @@
     <string name="login_fail">Login fail</string>
     <!---->
 
+    <!--create accoutn-->
+    <string name="full_name">Full name</string>
+    <string name="re_password">Re-Password</string>
+    <string name="create">Create</string>
+    <string name="create_account_title">Create account</string>
+    <!---->
+
     <!--home-->
     <string name="logout">Sign out</string>
     <string name="device">Device</string>
     <string name="map">Map</string>
+    <string name="type_device">Type</string>
+    <string name="setting">Setting</string>
     <string name="home">Home</string>
 
     <string name="delete">Delete</string>
     <string name="log_delete">Are you sure?</string>
     <string name="agree">Agree</string>
     <string name="disagree">Disagree</string>
+    <!---->
+
+    <!--humidity-->
+    <string name="temperature">Temperature</string>
+    <string name="humidity">Humidity</string>
+    <string name="pressure">Pressure</string>
+    <string name="light_intensity">Light intensity</string>
+    <string name="heat_index">Heat index</string>
+    <string name="dew_point">Dew point</string>
+    <!---->
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
     <!---->
+
+    <string name="Thingspeak">Thingspeak</string>
+    <string name="turnon">On</string>
+    <string name="turnoff">Off</string>
+
+    <string name="default_text_view">----</string>
+    <string name="title_progress">Progress</string>
+    <string name="progress_waiting">Please wait...</string>
+    <string name="no_location">no location</string>
+    <string name="search">Search...</string>
+
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.my.myapplication.notification;
+package com.tm.environmenttm.notification;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -10,8 +10,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.widget.Toast;
 
-import com.example.my.myapplication.R;
-import com.example.my.myapplication.ui.activity.MainActivity;
+import com.tm.environmenttm.LoginActivity;
+import com.tm.environmenttm.R;
 
 public class MyBroadcastReceiver extends BroadcastReceiver {
 
@@ -21,14 +21,14 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
         NotificationManager mNM;
         mNM = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.wakeup, "Test Alarm",
+        Notification notification = new Notification(R.mipmap.wakeup, "Test Alarm",
                 System.currentTimeMillis());
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, new Intent(context, LoginActivity.class), 0);
         notification = new Notification.Builder(context)
                 .setContentTitle("AlarmManagerScheduled")
                 .setContentText("This is a test message!")
-                .setSmallIcon(R.drawable.wakeup)
-                .setContentIntent(contentIntent).setAutoCancel(true)
+                .setSmallIcon(R.mipmap.wakeup)
+                .setContentIntent(contentIntent).setAutoCancel(true)// auto closed noti
                 .build();
 
         mNM.notify(0, notification);

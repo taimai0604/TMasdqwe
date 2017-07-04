@@ -3,4 +3,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tvLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#555555"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:textSize="18sp"
+        android:text="@string/default_text_view" />
 </LinearLayout>

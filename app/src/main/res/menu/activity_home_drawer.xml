@@ -8,12 +8,16 @@
             android:title="@string/home" />
         <item
         android:id="@+id/nav_device"
-        android:icon="@mipmap/ic_device"
+        android:icon="@mipmap/ic_device_mobile"
         android:title="@string/device" />
         <item
             android:id="@+id/nav_map"
             android:icon="@mipmap/ic_map"
             android:title="@string/map" />
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@mipmap/ic_setting"
+            android:title="@string/setting" />
     </group>
 
     <item android:title="">

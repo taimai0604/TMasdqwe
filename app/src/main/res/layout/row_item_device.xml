@@ -44,7 +44,7 @@
         android:textOn="" />
 
     <TextView
-        android:id="@+id/tvNameDevice"
+        android:id="@+id/edNameDevice"
         style="@style/listViewPrimaryDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,12 +57,12 @@
 
 
     <TextView
-        android:id="@+id/tvDeviceId"
+        android:id="@+id/edDeviceId"
         style="@style/listViewPrimaryDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/tvNameDevice"
+        android:layout_below="@id/edNameDevice"
         android:layout_toLeftOf="@id/chkState"
         android:text="DeviceIdItem" />
     <TextView
@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/ngangitem_separator"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/tvDeviceId"
+        android:layout_below="@id/edDeviceId"
         android:layout_toLeftOf="@id/chkState"
         android:text="" />
 

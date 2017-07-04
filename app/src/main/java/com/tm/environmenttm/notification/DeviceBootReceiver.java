@@ -1,4 +1,4 @@
-package com.example.my.myapplication.notification;
+package com.tm.environmenttm.notification;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.example.my.myapplication.ui.activity.MainActivity;
+import com.tm.environmenttm.LoginActivity;
 
 public class DeviceBootReceiver extends BroadcastReceiver {
 
@@ -16,7 +16,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             /* Setting the alarm here */
 
-            Intent alarmIntent = new Intent(context, MainActivity.class);
+            Intent alarmIntent = new Intent(context, LoginActivity.class);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0);
 

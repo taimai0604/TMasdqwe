@@ -1,11 +1,10 @@
-package com.example.my.myapplication.fenjuly.toggleexpandlayout;
+package com.tm.environmenttm.fragment;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,18 +18,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import com.example.my.myapplication.IOT.materialprofile.InfoDeviceFragment;
-import com.example.my.myapplication.IOT.server.models.Device;
-import com.example.my.myapplication.IOT.server.service.ServiceControl;
-import com.example.my.myapplication.IOT.server.service.ServiceDevice;
-import com.example.my.myapplication.R;
 import com.kyleduo.switchbutton.SwitchButton;
-
+import com.tm.environmenttm.R;
 import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
 
-public class SettingCustomFragment extends Fragment {
+public class SettingFragment extends Fragment {
     //alert
     final CharSequence myList[] = {"'C", "'K"};
     int position = 0;
@@ -47,10 +39,10 @@ public class SettingCustomFragment extends Fragment {
     TextView NotificationControlLedState;
     SwitchButton NotinControlLedState;
 
-    SharedPreferences sharedPreferences;
+    /*SharedPreferences sharedPreferences;
     ServiceDevice serviceDevice;
     ServiceControl serviceControl;
-    Device deviceInfo;
+    Device deviceInfo;*/
 
     @Override
     @TargetApi(21)
@@ -62,11 +54,12 @@ public class SettingCustomFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         try {
-            rootView = inflater.inflate(R.layout.activity_settingcustomlayout, container, false);
+            rootView = inflater.inflate(R.layout.fragment_setting, container, false);
         } catch (InflateException e) {
             Log.e("TAG", "Inflate exception");
         }
-        if (serviceDevice == null) {
+
+       /* if (serviceDevice == null) {
             serviceDevice = new ServiceDevice();
         }
         if (serviceControl == null) {
@@ -77,7 +70,7 @@ public class SettingCustomFragment extends Fragment {
         if (deviceInfo == null) {
             InfoDeviceFragment.reloadIOTDeviceListFragmentt(getContext());
         } else {
-        }
+        }*/
 
         unitTemp = (TextView) rootView.findViewById(R.id.unitTemp);
         unitTempValue = (TextView) rootView.findViewById(R.id.unitTempValue);
@@ -98,7 +91,7 @@ public class SettingCustomFragment extends Fragment {
         UpdateInfoTime = (TextView) rootView.findViewById(R.id.UpdateInfoTime);
         UpdateInfoTimeValue = (TextView) rootView.findViewById(R.id.UpdateInfoTimeValue);
 
-        NotificationControlLedState = (TextView) rootView.findViewById(R.id.NotificationControlLedState);
+        NotificationControlLedState = (TextView) rootView.findViewById(R.id.tvLedControl);
         NotinControlLedState = (SwitchButton) rootView.findViewById(R.id.switch_button_NotinControlLedState);
 
         Calendar calanders = Calendar.getInstance();
@@ -171,8 +164,6 @@ public class SettingCustomFragment extends Fragment {
                     switch_button_NotificationDaily.setChecked(isChecked);
                     NotificationState.setText(setState(isChecked));
                     NotificationDailyState.setText(setState(isChecked));
-
-
                 }
             }
         });
@@ -232,9 +223,14 @@ public class SettingCustomFragment extends Fragment {
                 boolean result = false;
                 Log.i("check", isChecked + "");
                 if (isChecked) {
-                    result = controlLed(deviceInfo.getDeviceId(), "on");
+                    //du lieu mau
+                    String deviceId ="fhaiosfshfioa";
+                    result = controlLed(deviceId, "on");
+                    //result = controlLed(deviceInfo.getDeviceId(), "on");
                 } else {
-                    result = controlLed(deviceInfo.getDeviceId(), "off");
+                    String deviceId ="fhaiosfshfioa";
+                    result = controlLed(deviceId, "off");
+                    //result = controlLed(deviceInfo.getDeviceId(), "off");
                 }
                 Log.i("result", result + "");
 
@@ -255,7 +251,7 @@ public class SettingCustomFragment extends Fragment {
     }
 
     private boolean controlLed(String deviceId, String state) {
-        boolean result = false;
+       /* boolean result = false;
         try {
             result = serviceControl.controlLed(deviceId, state);
         } catch (ExecutionException e) {
@@ -263,19 +259,22 @@ public class SettingCustomFragment extends Fragment {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return result;
+        return result;*/
+       return  true;
     }
 
     private boolean controlTimeDelay(String deviceId, int time) {
-        boolean result = false;
+       /* boolean result = false;
         try {
+            //SERVICE
             result = serviceControl.controlTimeDelay(deviceId, time + "");
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return result;
+        return result;*/
+       return true;
     }
 
 
@@ -308,7 +307,7 @@ public class SettingCustomFragment extends Fragment {
 /*
      * Inflate the XML view. activity_main is in res/layout/date_picker.xml
      */
-        View view = inflater.inflate(R.layout.date_picker, null, false);
+        View view = inflater.inflate(R.layout.alert_date_picker, null, false);
 
 // the time picker on the alert dialog, this is how to get the value
         final DatePicker myDatePicker = (DatePicker) view.findViewById(R.id.myDatePicker);
@@ -392,12 +391,16 @@ public class SettingCustomFragment extends Fragment {
     private void updateTimeDelay() {
         int time = hourOfDays * 60 * 60 + minutes * 60;
         Log.i("time", time + "");
-        if (controlTimeDelay(deviceInfo.getDeviceId(), time)) {
+        // du lieu mau
+        String deviceID = "fshfhdlafl";
+        if (controlTimeDelay(deviceID, time)) {
+        //if (controlTimeDelay(deviceInfo.getDeviceId(), time)) {
             UpdateInfoTimeValue.setText(hourOfDays + ":" + minutes);
         } else {
             showDialogError();
         }
     }
+
     //end set time delay
     CompoundButton.OnCheckedChangeListener switchUpdateInfo = new CompoundButton.OnCheckedChangeListener() {
         @Override

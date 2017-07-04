@@ -1,109 +1,89 @@
 package com.tm.environmenttm.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 
+import com.kyleduo.switchbutton.SwitchButton;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.constant.ConstantFunction;
+import com.tm.environmenttm.constant.ConstantURL;
+import com.tm.environmenttm.constant.ConstantValue;
+import com.tm.environmenttm.controller.IRESTfull;
+import com.tm.environmenttm.controller.RetrofitClient;
+import com.tm.environmenttm.model.Device;
+import com.tm.environmenttm.model.RealmTM;
+import com.tm.environmenttm.model.ResponeBoolean;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DeviceControllerFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DeviceControllerFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class DeviceControllerFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class DeviceControllerFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
-    private OnFragmentInteractionListener mListener;
+    private SwitchButton sbLedControl;
+    private TextView tvLedControl;
+    private Device device;
 
     public DeviceControllerFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DeviceControllerFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DeviceControllerFragment newInstance(String param1, String param2) {
-        DeviceControllerFragment fragment = new DeviceControllerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_device_controller, container, false);
-    }
+        ConstantFunction.changeTitleBar(getActivity(),ConstantValue.TITLE_DEVICE_CONTROL);
+        View view = inflater.inflate(R.layout.fragment_device_controller, container, false);
+        device = (Device) RealmTM.INSTANT.findFirst(Device.class);
+        sbLedControl = (SwitchButton) view.findViewById(R.id.sbLedControl);
+        tvLedControl = (TextView) view.findViewById(R.id.tvLedControl);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+        sbLedControl.setChecked(true);
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+        sbLedControl.setOnCheckedChangeListener(this);
+        return view;
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.sbLedControl:
+                String command;
+                if (isChecked) {
+                    command = ConstantValue.LED_ON;
+                } else {
+                    command = ConstantValue.LED_OFF;
+                }
+                ledControl(command);
+                break;
+        }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private void ledControl(String command){
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Call<ResponeBoolean> call = iServices.ledControl(device.getDeviceId(),command);
+        call.enqueue(new Callback<ResponeBoolean>() {
+            @Override
+            public void onResponse(Call<ResponeBoolean> call, Response<ResponeBoolean> response) {
+                if (response.code() == 200) {
+                    ResponeBoolean result = response.body();
+                    if(!result.isResult()){
+                        ConstantFunction.showToast(getContext(), "control fail");
+                    }
+                } else {
+                    ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponeBoolean> call, Throwable t) {
+                ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+            }
+
+        });
     }
 }

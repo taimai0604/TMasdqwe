@@ -7,6 +7,7 @@
         android:icon="@drawable/ic_edit_white"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
-        android:title="asdalskdjaskljdlkasd"
+        android:title=""
         />
+
 </menu>

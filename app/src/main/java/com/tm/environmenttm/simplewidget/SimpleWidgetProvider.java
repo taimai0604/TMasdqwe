@@ -1,4 +1,4 @@
-package com.example.my.myapplication.simplewidget;
+package com.tm.environmenttm.simplewidget;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -13,13 +13,13 @@ import android.text.format.Time;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.example.my.myapplication.R;
-import com.example.my.myapplication.notification.MyBroadcastReceiver;
+import com.tm.environmenttm.R;
+import com.tm.environmenttm.notification.MyBroadcastReceiver;
 
 import java.util.Random;
 
 public class SimpleWidgetProvider extends AppWidgetProvider {
-    public static String CLOCK_UPDATE = "com.example.my.myapplication.simplewidget.CLOCK_UPDATE";
+    public static String CLOCK_UPDATE = "com.tm.environmenttm.simplewidget.CLOCK_UPDATE";
     public static String UPDATE_PREFERENCES = "android.appwidget.action.APPWIDGET_UPDATE_OPTIONS";
     private PendingIntent pendingIntent, pendingIntentNoti;
 
@@ -84,6 +84,7 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                     0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            //set event on click
             remoteViews.setOnClickPendingIntent(R.id.temp, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }

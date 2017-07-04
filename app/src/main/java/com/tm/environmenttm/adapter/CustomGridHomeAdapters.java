@@ -80,7 +80,6 @@ public class CustomGridHomeAdapters extends BaseAdapter {
 
         holder.tv.setText(result[position]);
         holder.img.setImageResource(imageId[position]);
-        Log.d("asd", "getView: ------------------" + position);
 //        holder.valueCurrentEnv.setText(envCurrent[position]);
 //        holder.valueCurrentEnv.setText(envCurrent[position]);
 //        rowView.setOnClickListener(new OnClickListener() {

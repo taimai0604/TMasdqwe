@@ -1,4 +1,4 @@
-package com.example.my.myapplication.simplewidget;
+package com.tm.environmenttm.simplewidget;
 
 /**
  * Created by MY on 6/30/2017.
@@ -14,7 +14,7 @@ import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
 import android.widget.RemoteViews;
 
-import com.example.my.myapplication.R;
+import com.tm.environmenttm.R;
 
 import java.util.Calendar;
 import java.util.Date;
