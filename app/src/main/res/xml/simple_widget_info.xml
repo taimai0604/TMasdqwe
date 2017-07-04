@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="120dp"
+    android:minHeight="60dp"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/widget_layout"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen|keyguard"
+    android:previewImage="@drawable/prevpic">
+</appwidget-provider>
+    <!-- widget sẽ được update sau một khoảng thời gian mặc định..Hiện tại là 30p-->
+    <!-- 30 min =30x60x1000 -->
+    <!--android:updatePeriodMillis="1800000"/>-->
