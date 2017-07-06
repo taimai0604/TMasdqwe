@@ -32,7 +32,11 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- widget -->
@@ -50,24 +54,20 @@
         <service android:name=".simplewidget.UpdateService" />
 
         <!-- noti -->
-        <!--<receiver android:name=".notification.MyBroadcastReceiver" />-->
-        <!--<receiver-->
-            <!--android:name=".notification.DeviceBootReceiver"-->
-            <!--android:enabled="false">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+        <receiver android:name=".notification.MyBroadcastReceiver" />
+        <receiver
+            android:name=".notification.DeviceBootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".SearchLocationActivity"
             android:theme="@style/SearchBar" />
         <activity android:name=".pubnub.DemoPubnub">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

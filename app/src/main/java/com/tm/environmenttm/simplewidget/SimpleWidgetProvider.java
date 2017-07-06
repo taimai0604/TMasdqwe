@@ -91,16 +91,17 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.widget_layout);
 
-            // load temp and humidity
-            loadTempAndHumidity(remoteViews);
 
+//
             Intent intent = new Intent(context, SimpleWidgetProvider.class);
             intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                     0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             //set event on click
-            appWidgetManager.updateAppWidget(widgetId, remoteViews);
+            remoteViews.setOnClickPendingIntent(R.id.temp, pendingIntent);
+            // load temp and humidity
+            loadTempAndHumidity(remoteViews, appWidgetManager, widgetId);
         }
         //B1: cap nhat thoi gian
         final AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -134,28 +135,31 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
     */
     }
 
-    private void loadTempAndHumidity(final RemoteViews remoteViews) {
+    private void loadTempAndHumidity(final RemoteViews remoteViews, final AppWidgetManager appWidgetManager, final int widgetId) {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
         String query = "{ \"order\": \"datedCreated DESC\" ,  \"limit\": 1 }";
         Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
-        Call<List<Environment>> call = iServices.getInfoEnvironmentByDevice(device.getId(), query);
+        if (device != null) {
+            Call<List<Environment>> call = iServices.getInfoEnvironmentByDevice(device.getId(), query);
 
-        call.enqueue(new Callback<List<Environment>>() {
+            call.enqueue(new Callback<List<Environment>>() {
 
-            @Override
-            public void onResponse(Call<List<Environment>> call, Response<List<Environment>> response) {
-                Environment environment = response.body().get(0);
-                if (response.code() == 200 && environment != null) {
-                    remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
-                    remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
-                    remoteViews.setOnClickPendingIntent(R.id.temp, pendingIntent);
+                @Override
+                public void onResponse(Call<List<Environment>> call, Response<List<Environment>> response) {
+                    Environment environment = response.body().get(0);
+                    if (response.code() == 200 && environment != null) {
+                        remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
+                        remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
+
+                        appWidgetManager.updateAppWidget(widgetId, remoteViews);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Environment>> call, Throwable t) {
+                @Override
+                public void onFailure(Call<List<Environment>> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        }
     }
 }

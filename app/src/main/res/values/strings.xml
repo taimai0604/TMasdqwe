@@ -64,4 +64,8 @@
     <!--Control device-->
     <string name="control_led">Led</string>
     <string name="time_delay">Time deplay</string>
+
+    <!---->
+    <string name="tempc">\u2103</string>
+    <string name="tempf">\u2109</string>
 </resources>

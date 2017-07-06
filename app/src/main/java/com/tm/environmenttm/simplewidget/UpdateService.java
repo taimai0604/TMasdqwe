@@ -48,7 +48,9 @@ public class UpdateService extends Service {
         loadTempAndHumidity(view);
 
         Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
-        view.setTextViewText(R.id.tvLocation,device.getLocation());
+        if (device != null) {
+            view.setTextViewText(R.id.tvLocation, device.getLocation());
+        }
         ComponentName theWidget = new ComponentName(this, SimpleWidgetProvider.class);
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
         manager.updateAppWidget(theWidget, view);
@@ -60,11 +62,11 @@ public class UpdateService extends Service {
         Calendar c = Calendar.getInstance();
         int minute = c.get(Calendar.MINUTE);
         int hour = c.get(Calendar.HOUR_OF_DAY);
-        return hour + " : " + minute ;
+        return hour + " : " + minute;
     }
 
     public String getCurrentDate() {
-        return  DateFormat.format("MMMM dd, yyyy", new Date()).toString();
+        return DateFormat.format("MMMM dd, yyyy", new Date()).toString();
 
     }
 
@@ -72,24 +74,25 @@ public class UpdateService extends Service {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
         String query = "{ \"order\": \"datedCreated DESC\" ,  \"limit\": 1 }";
         Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
-        Call<List<Environment>> call = iServices.getInfoEnvironmentByDevice(device.getId(), query);
+        if (device != null) {
+            Call<List<Environment>> call = iServices.getInfoEnvironmentByDevice(device.getId(), query);
+            call.enqueue(new Callback<List<Environment>>() {
 
-        call.enqueue(new Callback<List<Environment>>() {
+                @Override
+                public void onResponse(Call<List<Environment>> call, Response<List<Environment>> response) {
+                    Environment environment = response.body().get(0);
+                    if (response.code() == 200 && environment != null) {
+                        remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
+                        remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
 
-            @Override
-            public void onResponse(Call<List<Environment>> call, Response<List<Environment>> response) {
-                Environment environment = response.body().get(0);
-                if (response.code() == 200 && environment != null) {
-                    remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
-                    remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Environment>> call, Throwable t) {
 
                 }
-            }
-
-            @Override
-            public void onFailure(Call<List<Environment>> call, Throwable t) {
-
-            }
-        });
+            });
+        }
     }
 }

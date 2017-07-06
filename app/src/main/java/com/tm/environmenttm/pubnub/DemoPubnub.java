@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 public class DemoPubnub extends AppCompatActivity {
 
-    private String TAG = ;
+    private String TAG = this.getClass().getName() ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class DemoPubnub extends AppCompatActivity {
                     // UI / internal notifications, etc
 
                     if (status.getCategory() == PNStatusCategory.PNConnectedCategory){
-                        pubnub.publish().channel("awesomeChannel").message("hello!!").async(new PNCallback<PNPublishResult>() {
+                        pubnub.publish().channel("hello").message("hello --- !!").async(new PNCallback<PNPublishResult>() {
                             @Override
                             public void onResponse(PNPublishResult result, PNStatus status) {
                                 // Check whether request successfully completed or not.
@@ -107,6 +107,6 @@ public class DemoPubnub extends AppCompatActivity {
             }
         });
 
-        pubnub.subscribe().channels(Arrays.asList("awesomeChannel")).execute();
+        pubnub.subscribe().channels(Arrays.asList("hello")).execute();
     }
 }
