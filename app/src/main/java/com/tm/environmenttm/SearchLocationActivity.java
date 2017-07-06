@@ -64,6 +64,7 @@ public class SearchLocationActivity extends AppCompatActivity {
                 RealmTM.INSTANT.addRealm(dataModel);
 
                 setResult(Activity.RESULT_OK);
+                Home.refresh = true;
                 finish();
             }
         });
@@ -71,7 +72,7 @@ public class SearchLocationActivity extends AppCompatActivity {
 
     public void loadDevices(String nameLocation) {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
-        Call<List<Device>> call = iServices.getDeviceByLocation("{\"where\":{\"location\":{\"like\":\""+nameLocation+"\"}}}");
+        Call<List<Device>> call = iServices.getDeviceByLocation("{\"where\":{\"location\":{\"like\":\""+nameLocation+"\"},\"active\":true}}");
         dataModels = new ArrayList<>();
         // show it
         call.enqueue(new Callback<List<Device>>() {

@@ -1,5 +1,5 @@
 
-package com.xxmassdeveloper.mpchartexample.listviewitems;
+package com.tm.environmenttm.chart;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -12,7 +12,7 @@ import com.github.mikephil.charting.components.XAxis.XAxisPosition;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.LineData;
-import com.xxmassdeveloper.mpchartexample.R;
+import com.tm.environmenttm.R;
 
 public class LineChartItem extends ChartItem {
 

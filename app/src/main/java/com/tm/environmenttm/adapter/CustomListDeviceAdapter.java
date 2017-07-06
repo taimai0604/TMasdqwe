@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,22 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tm.environmenttm.R;
 import com.tm.environmenttm.constant.ConstantFunction;
+import com.tm.environmenttm.constant.ConstantURL;
+import com.tm.environmenttm.constant.ConstantValue;
+import com.tm.environmenttm.controller.IRESTfull;
+import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.fragment.InfoDeviceFragment;
 import com.tm.environmenttm.model.Device;
+import com.tm.environmenttm.model.ResponeBoolean;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by taima on 06/27/2017.
@@ -74,7 +87,7 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         final Device dataModel = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
@@ -111,8 +124,35 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
         viewHolder.chkState.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                dataModel.setActive(isChecked);
+                changeActiveDevice(dataModel);
+            }
 
-                Toast.makeText(context, dataModel.getNameDevice() + " - " + isChecked, Toast.LENGTH_SHORT).show();
+            private void changeActiveDevice(Device dataModel) {
+                IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+                Call<ResponeBoolean> call = iServices.editDevice(dataModel, dataModel.getId());
+                // Set up progress before call
+                final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
+                // show it
+                call.enqueue(new Callback<ResponeBoolean>() {
+                    @Override
+                    public void onResponse(Call<ResponeBoolean> call, Response<ResponeBoolean> response) {
+                        if (getContext() != null) {
+                            if (response.body().isResult()) {
+                                ConstantFunction.showToast(getContext(), "Success!");
+                            } else {
+                                ConstantFunction.showToast(getContext(), "Fail!");
+                            }
+                            dialog.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponeBoolean> call, Throwable t) {
+                        ConstantFunction.showToast(getContext(), "Fail!");
+                        dialog.dismiss();
+                    }
+                });
             }
         });
         // Return the completed view to render on screen
@@ -135,12 +175,12 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
             Bundle bundle = new Bundle();
 
             bundle.putSerializable("device", device);
-            bundle.putBoolean("active",(device.isActive()));
+            bundle.putBoolean("active", (device.isActive()));
 
             mFragment.setArguments(bundle);
 
             FragmentManager manager = ((FragmentActivity) mContext).getSupportFragmentManager();
-            ConstantFunction.replaceFragment(manager, R.id.frgContent, mFragment,"show_info_device");
+            ConstantFunction.replaceFragment(manager, R.id.frgContent, mFragment, ConstantValue.FRG_INFO_DEVICE);
         }
 
     }

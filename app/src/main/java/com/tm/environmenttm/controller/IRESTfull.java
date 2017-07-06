@@ -5,7 +5,9 @@ import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.ChartThingspeak;
 import com.tm.environmenttm.model.Device;
+import com.tm.environmenttm.model.Environment;
 import com.tm.environmenttm.model.ResponeBoolean;
+import com.tm.environmenttm.model.ResponeNumber;
 import com.tm.environmenttm.model.Type;
 
 import java.util.List;
@@ -53,13 +55,26 @@ public interface IRESTfull {
     @GET(ConstantURL.LED_CONTROL)
     Call<ResponeBoolean> ledControl(@Query("deviceId") String deviceId, @Query("command") String command);
 
+    //isLed
+    @GET(ConstantURL.IS_LED)
+    Call<ResponeBoolean> isLed(@Query("deviceId") String deviceId);
+
+    //get time delay
+    @GET(ConstantURL.GET_TIME_DELAY)
+    Call<ResponeNumber> getTimeDelay(@Query("deviceId") String deviceId);
+
+    //set time delay
+    @GET(ConstantURL.SET_TIME_DELAY)
+    Call<ResponeBoolean> setTimeDelay(@Query("deviceId") String deviceId, @Query("timeDelay") int timeDelay);
+
     //get environment by device
+    @GET(ConstantURL.GET_INFO_ENVIRONMENT_BY_DEVICE)
+    Call<List<Environment>> getInfoEnvironmentByDevice(@Path("id") String id, @Query("filter") String filter);
 
     //get battery by device
 
     //get list chart by device
 
-    //set time delay
 
     //set state blub
 

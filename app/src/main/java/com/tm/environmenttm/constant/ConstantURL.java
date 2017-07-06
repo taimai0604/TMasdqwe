@@ -16,6 +16,9 @@ public class ConstantURL {
     public static final String GET_ALL_DEVICE = "/api/Devices";
     public static final String EDIT_DEVICE = "/api/Devices/{id}/editDevice";
     public static final String LED_CONTROL = "/api/Devices/controllerLed";
+    public static final String IS_LED = "/api/Devices/isLed";
+    public static final String GET_TIME_DELAY = "/api/Devices/getTimeDelay";
+    public static final String SET_TIME_DELAY = "/api/Devices/setTimeDelay";
 
 
     //type
@@ -24,6 +27,8 @@ public class ConstantURL {
 
     //environment
     public static final String GET_INFO_ENVIRONMENT_CURRENT = "/api/Devices/getInfoEnv";
+    public static final String GET_INFO_ENVIRONMENT_BY_DEVICE = "/api/Devices/{id}/environments";
+
 
     //chart thingspeak
     public static final String GET_ALL_CHART_BY_DEVICE_ID = "/api/Devices/{id}/chartThingspeaks";

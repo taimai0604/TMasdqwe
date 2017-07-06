@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item
+        android:id="@+id/action_refersh"
+        android:orderInCategory="100"
+        android:title="@string/action_refresh"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_real_time"
         android:orderInCategory="100"
@@ -14,12 +18,12 @@
         android:title="@string/action_control"
         app:showAsAction="never" />
 
+
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_action_action_search"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom"
         android:title=""
-        />
+        app:showAsAction="ifRoom" />
 
 </menu>

@@ -1,5 +1,6 @@
 package com.tm.environmenttm.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,12 +19,16 @@ import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
+import com.tm.environmenttm.map.DataParserLocation;
+import com.tm.environmenttm.map.TestMapFragment;
+import com.tm.environmenttm.model.AddressGeo;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.RealmTM;
 import com.tm.environmenttm.model.ResponeBoolean;
 import com.tm.environmenttm.model.Type;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,7 +75,7 @@ public class EditDeviceFragment extends Fragment {
         edLocation.setText(device.getLocation());
         edKeyThingspeak.setText(device.getKeyThingspeak());
 
-       loadTypeForDevice(device.getTypeId());
+        loadTypeForDevice(device.getTypeId());
 
         tvType.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,16 +115,57 @@ public class EditDeviceFragment extends Fragment {
             device.setNameDevice(edNameDevice.getText().toString());
             device.setTypeId(getTypeId(tvType.getText().toString()));
             device.setDeviceId(edDeviceId.getText().toString());
-
-            // dua vao ten de thay doi thong so vi tri
-            device.setLocation(edLocation.getText().toString());
             device.setKeyThingspeak(edKeyThingspeak.getText().toString());
 
-            //update len server
-            saveChangeDevice(device);
+            // dua vao ten de thay doi thong so vi tri
+            //String address = "khu phố 6, Thủ Đức, Hồ Chí Minh, Việt Nam";
+            String address = edLocation.getText().toString();
+            String url = TestMapFragment.getUrl(address);
+            Log.d("getLocation", url.toString());
+            FetchUrlGeo FetchUrl = new FetchUrlGeo();
+            FetchUrl.execute(url);
+
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // Fetches data from url passed
+    private class FetchUrlGeo extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            // For storing data from web service
+            String data = "";
+            try {
+                // Fetching the data from web service
+                data = TestMapFragment.downloadUrl(url[0]);
+                Log.d("Background Task data", data.toString());
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            List<HashMap<String, String>> addressPlacesList = null;
+            DataParserLocation dataParser = new DataParserLocation();
+            addressPlacesList = dataParser.parse(result);
+            AddressGeo addressGeo = TestMapFragment.ShowInfoPlacesAddress(addressPlacesList);
+            if (addressGeo != null) {
+                device.setLocation(addressGeo.getAddress());
+                device.setLatitude(addressGeo.getLa());
+                device.setLongitude(addressGeo.getLn());
+            }
+            Log.d(TAG, "onOptionsItemSelected: add " + addressGeo);
+            //update len server
+            saveChangeDevice(device);
+
+            Log.d("GooglePlacesReadTask", "onPostExecute Exit");
+        }
     }
 
     private void saveChangeDevice(Device device) {

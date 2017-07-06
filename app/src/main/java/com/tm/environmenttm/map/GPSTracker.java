@@ -1,10 +1,8 @@
 package com.tm.environmenttm.map;
 
-/**
- * Created by HUYỀN MY NGUYỄN THỊ on 23/05/2016.
- */
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -19,6 +17,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 public class GPSTracker extends Service implements LocationListener {
 
@@ -45,6 +44,8 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
     public Location getLocation() {
+        Log.d("getLocation", "getLocation");
+
         try {
             locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
@@ -58,22 +59,37 @@ public class GPSTracker extends Service implements LocationListener {
                 this.canGetLocation = true;
 
                 if (isNetworkEnabled) {
+                    Log.d("isNetworkEnabled", "isNetworkEnabled" + isNetworkEnabled);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
+                        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                    //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
+                                    Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-
-                    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
-                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
+                                new AlertDialog.Builder(this)
+                                        .setTitle("GPS is settings")
+                                        .setMessage("GPS is not enabled. Do you want to go to settings menu?")
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                ActivityCompat.requestPermissions((Activity) context,
+                                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                                        99);
+                                            }
+                                        })
+                                        .create()
+                                        .show();
+                            } else {
+                                ActivityCompat.requestPermissions((Activity) context,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        99);
+                            }
+                            Log.d("valuelocation", "location");
                             return location;
-                        }}
+                        }
+                    }
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
                     if (locationManager != null) {
@@ -114,7 +130,7 @@ public class GPSTracker extends Service implements LocationListener {
 
     public void stopUsingGPS() {
         if (locationManager != null) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -129,14 +145,14 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
     public double getLatitude() {
-        if(location != null) {
+        if (location != null) {
             latitude = location.getLatitude();
         }
         return latitude;
     }
 
     public double getLongitude() {
-        if(location != null) {
+        if (location != null) {
             longitude = location.getLongitude();
         }
 

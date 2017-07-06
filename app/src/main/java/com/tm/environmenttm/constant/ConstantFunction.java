@@ -13,6 +13,9 @@ import com.tm.environmenttm.R;
 import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.RealmTM;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by taima on 06/23/2017.
  */
@@ -62,8 +65,32 @@ public class ConstantFunction {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+    public static void replaceFragmentNotBackStack(FragmentManager fragmentManager, int idFragmentContent, Fragment fragment, String tag) {
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(idFragmentContent, fragment, tag);
+        fragmentTransaction.commit();
+    }
 
     public static void changeTitleBar(Activity activity, String title){
         ((AppCompatActivity) activity).getSupportActionBar().setTitle(title);
+    }
+
+    public static void cleanFragment(FragmentManager fragmentManager){
+        List<Fragment> list = new ArrayList<Fragment>();
+        Fragment infoDevice = fragmentManager.findFragmentByTag(ConstantValue.FRG_INFO_DEVICE);
+        Fragment editDevice = fragmentManager.findFragmentByTag(ConstantValue.FRG_INFO_DEVICE);
+        Fragment home = fragmentManager.findFragmentByTag(ConstantValue.FRG_HOME);
+        Fragment addDevice = fragmentManager.findFragmentByTag(ConstantValue.FRG_ADD_DEVICE);
+
+        list.add(infoDevice);
+        list.add(editDevice);
+        list.add(addDevice);
+        list.add(home);
+
+        for (Fragment fragment: list) {
+            if(fragment != null)
+                fragmentManager.beginTransaction().remove(fragment).commit();
+        }
+
     }
 }

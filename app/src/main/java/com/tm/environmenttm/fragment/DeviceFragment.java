@@ -85,7 +85,7 @@ public class DeviceFragment extends Fragment {
 
         if (id == R.id.action_add_device) {
             Fragment fragment = new AddDeivceFragment();
-            ConstantFunction.replaceFragment(getFragmentManager(), R.id.frgContent, fragment, "add_device");
+            ConstantFunction.replaceFragment(getFragmentManager(), R.id.frgContent, fragment, ConstantValue.FRG_ADD_DEVICE);
         }
 
         return super.onOptionsItemSelected(item);

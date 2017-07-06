@@ -2,6 +2,7 @@ package com.tm.environmenttm.config;
 
 import android.app.Application;
 
+import com.github.mikephil.charting.utils.Utils;
 import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
@@ -20,8 +21,11 @@ public class ConfigActivity  extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //init realm
         Realm.init(this);
 
+        // initialize the utilities
+        Utils.init(this);
 
     }
 

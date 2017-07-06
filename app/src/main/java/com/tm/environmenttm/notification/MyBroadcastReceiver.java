@@ -32,7 +32,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                 .build();
 
         mNM.notify(0, notification);
-        Toast.makeText(context, "Don't panik but your time is up!!!!.", Toast.LENGTH_LONG).show();
+//        Toast.makeText(context, "Don't panik but your time is up!!!!.", Toast.LENGTH_LONG).show();
 
     }
 }

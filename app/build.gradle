@@ -42,5 +42,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:11.0.1'
     compile 'com.kyleduo.switchbutton:library:1.2.9'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     testCompile 'junit:junit:4.12'
 }

@@ -20,6 +20,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.constant.ConstantFunction;
+import com.tm.environmenttm.constant.ConstantValue;
+
 import java.util.Calendar;
 
 public class SettingFragment extends Fragment {
@@ -39,10 +42,6 @@ public class SettingFragment extends Fragment {
     TextView NotificationControlLedState;
     SwitchButton NotinControlLedState;
 
-    /*SharedPreferences sharedPreferences;
-    ServiceDevice serviceDevice;
-    ServiceControl serviceControl;
-    Device deviceInfo;*/
 
     @Override
     @TargetApi(21)
@@ -53,24 +52,12 @@ public class SettingFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        ConstantFunction.changeTitleBar(getActivity(), ConstantValue.TITLE_SETTING);
         try {
             rootView = inflater.inflate(R.layout.fragment_setting, container, false);
         } catch (InflateException e) {
             Log.e("TAG", "Inflate exception");
         }
-
-       /* if (serviceDevice == null) {
-            serviceDevice = new ServiceDevice();
-        }
-        if (serviceControl == null) {
-            serviceControl = new ServiceControl();
-        }
-        deviceInfo = InfoDeviceFragment.checkSessionDeviceInfo(getContext(), sharedPreferences);
-
-        if (deviceInfo == null) {
-            InfoDeviceFragment.reloadIOTDeviceListFragmentt(getContext());
-        } else {
-        }*/
 
         unitTemp = (TextView) rootView.findViewById(R.id.unitTemp);
         unitTempValue = (TextView) rootView.findViewById(R.id.unitTempValue);
