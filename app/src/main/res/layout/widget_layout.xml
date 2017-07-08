@@ -65,19 +65,33 @@
             android:typeface="sans"
             android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/timestamp"
-            android:layout_width="wrap_content"
+        <!--<TextView-->
+            <!--android:id="@+id/timestamp"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/weather"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/default_text_view"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:textSize="12sp"-->
+            <!--android:textStyle="italic"-->
+            <!--android:typeface="sans"-->
+            <!--android:visibility="invisible" />-->
+
+        <TextClock
+            android:id="@+id/textClock"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/weather"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:text="@string/default_text_view"
-            android:textColor="#ffffffff"
+            android:format12Hour="h:mm:ss a"
+            android:gravity="center_horizontal"
+            android:textColor="#ffffff"
             android:textSize="12sp"
             android:textStyle="italic"
             android:typeface="sans"
             android:visibility="visible" />
+
         <!--xoay-->
         <!--<ProgressBar
             android:id="@+id/loading"
@@ -110,5 +124,6 @@
         android:textSize="45sp"
         android:typeface="sans"
         android:visibility="visible" />
-
 </RelativeLayout>
+
+

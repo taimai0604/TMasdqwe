@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.config.ConfigApp;
 import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.RealmTM;
 
@@ -92,5 +93,14 @@ public class ConstantFunction {
                 fragmentManager.beginTransaction().remove(fragment).commit();
         }
 
+    }
+
+
+    // setting default
+    public static void settingDefault(){
+        ConfigApp configApp = new ConfigApp();
+        configApp.setNotificationTemp(false);
+        RealmTM.INSTANT.deleteAll(ConfigApp.class);
+        RealmTM.INSTANT.addRealm(configApp);
     }
 }

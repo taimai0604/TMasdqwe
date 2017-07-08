@@ -14,6 +14,7 @@ import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.constant.ConstantValue;
 
 import java.util.Arrays;
 
@@ -27,8 +28,8 @@ public class DemoPubnub extends AppCompatActivity {
         setContentView(R.layout.activity_demo_pubnub);
 
         PNConfiguration pnConfiguration = new PNConfiguration();
-        pnConfiguration.setSubscribeKey("sub-c-c8dbb904-57bc-11e7-af75-02ee2ddab7fe");
-        pnConfiguration.setPublishKey("pub-c-cd864c3f-3537-4adb-95d0-40c3fb8116bb");
+        pnConfiguration.setSubscribeKey(ConstantValue.SUB_PUBNUB);
+        pnConfiguration.setPublishKey(ConstantValue.PUB_PUBNUB);
 
         PubNub pubnub = new PubNub(pnConfiguration);
 

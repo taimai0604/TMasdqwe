@@ -101,7 +101,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call<ResponeUserLogin> call, Response<ResponeUserLogin> response) {
                 if (response.code() == 200) {
+                    // save account
                     RealmTM.INSTANT.addRealm(response.body().getUser());
+
+                    // init setting defaut
+                    ConstantFunction.settingDefault();
+
                     Intent intent = new Intent(getContext(),Home.class);
                     startActivity(intent);
                 } else {

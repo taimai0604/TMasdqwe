@@ -1,23 +1,25 @@
 package com.tm.environmenttm;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
-import com.tm.environmenttm.fragment.HomeFragment;
 import com.tm.environmenttm.fragment.LoginFragment;
 import com.tm.environmenttm.model.RealmTM;
 import com.tm.environmenttm.model.Type;
+import com.tm.environmenttm.notification.MyBroadcastReceiver;
 
 import java.util.List;
 
-import io.realm.RealmObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
             fm.popBackStack();
         }
         Fragment first = new LoginFragment();
-        ConstantFunction.addFragment(fragmentManager,R.id.frgContentLogin,first,"first");
+        ConstantFunction.addFragment(fragmentManager, R.id.frgContentLogin, first, "first");
     }
 
     private void loadListTypeType() {
@@ -69,8 +71,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
         if (ConstantFunction.isLogin()) {
             finish();
-        }else {
-            if(fragmentManager.getBackStackEntryCount() > 0) {
+        } else {
+            if (fragmentManager.getBackStackEntryCount() > 0) {
                 Fragment first = new LoginFragment();
                 ConstantFunction.replaceFragment(fragmentManager, R.id.frgContentLogin, first, "first");
             }

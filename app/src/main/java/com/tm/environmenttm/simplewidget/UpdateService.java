@@ -22,9 +22,9 @@ import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.Environment;
 import com.tm.environmenttm.model.RealmTM;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,52 +39,46 @@ public class UpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String time = getCurrentDateTime();
         String today = getCurrentDate();
         RemoteViews view = new RemoteViews(getPackageName(), R.layout.widget_layout);
-        view.setTextViewText(R.id.timestamp, time);
         view.setTextViewText(R.id.weather, today);
 
-        loadTempAndHumidity(view);
 
-        Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
-        if (device != null) {
-            view.setTextViewText(R.id.tvLocation, device.getLocation());
-        }
         ComponentName theWidget = new ComponentName(this, SimpleWidgetProvider.class);
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
-        manager.updateAppWidget(theWidget, view);
+        //   manager.updateAppWidget(theWidget, view);
+        loadTempAndHumidity(view, manager, theWidget);
 
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private String getCurrentDateTime() {
-        Calendar c = Calendar.getInstance();
-        int minute = c.get(Calendar.MINUTE);
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        return hour + " : " + minute;
-    }
-
     public String getCurrentDate() {
         return DateFormat.format("MMMM dd, yyyy", new Date()).toString();
-
     }
 
-    private void loadTempAndHumidity(final RemoteViews remoteViews) {
+    private void loadTempAndHumidity(final RemoteViews remoteViews, final AppWidgetManager appWidgetManager, final ComponentName theWidget) {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
         String query = "{ \"order\": \"datedCreated DESC\" ,  \"limit\": 1 }";
         Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
         if (device != null) {
             Call<List<Environment>> call = iServices.getInfoEnvironmentByDevice(device.getId(), query);
+
             call.enqueue(new Callback<List<Environment>>() {
 
                 @Override
                 public void onResponse(Call<List<Environment>> call, Response<List<Environment>> response) {
                     Environment environment = response.body().get(0);
                     if (response.code() == 200 && environment != null) {
-                        remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
-                        remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
+                        Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
+                        if (device != null) {
+//                            Random random = new Random();
+//                            remoteViews.setTextViewText(R.id.temp, String.valueOf(random.nextInt(1000)));
+                            remoteViews.setTextViewText(R.id.tvLocation, device.getLocation());
+                            remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
+                            remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
+                        }
 
+                        appWidgetManager.updateAppWidget(theWidget, remoteViews);
                     }
                 }
 
@@ -95,4 +89,6 @@ public class UpdateService extends Service {
             });
         }
     }
+
+
 }

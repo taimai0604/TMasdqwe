@@ -8,15 +8,12 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
-import android.text.format.Time;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.tm.environmenttm.R;
-import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
-import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.model.Device;
@@ -24,20 +21,17 @@ import com.tm.environmenttm.model.Environment;
 import com.tm.environmenttm.model.RealmTM;
 import com.tm.environmenttm.notification.MyBroadcastReceiver;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SimpleWidgetProvider extends AppWidgetProvider {
-    public static String CLOCK_UPDATE = "com.tm.environmenttm.simplewidget.CLOCK_UPDATE";
+    //    public static String CLOCK_UPDATE = "com.tm.environmenttm.simplewidget.CLOCK_UPDATE";
     public static String UPDATE_PREFERENCES = "android.appwidget.action.APPWIDGET_UPDATE";
     private PendingIntent pendingIntent, pendingIntentNoti;
-
-    AlarmManager alarmManager;
-    PendingIntent pendingIntentwakeup;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -52,15 +46,6 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                 Log.i("UPDATE_PREFERENCES", appWidgetID + "==");
             }
         }
-        // Clock Update Event
-        if (CLOCK_UPDATE.equals(intent.getAction())) {
-            int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
-            for (int appWidgetID : ids) {
-                updateClock(context, appWidgetManager, appWidgetID);
-                Log.i("CLOCK_UPDATE", appWidgetID + "==");
-
-            }
-        }
     }
 
     public static void updateClock(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
@@ -68,15 +53,6 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
         AppWidgetProviderInfo appInfo = appWidgetManager.getAppWidgetInfo(appWidgetId);
         RemoteViews views = new RemoteViews(context.getPackageName(), appInfo.initialLayout);
 
-        // Update the time text
-        Time today = new Time(Time.getCurrentTimezone());
-        today.setToNow();
-        int hour = today.hour;
-        int minute = today.minute;
-        int second = today.second;
-        Log.i("updateClock", second + "==");
-        // Apply the time to the views
-        views.setTextViewText(R.id.timestamp, "" + hour + ":" + minute + ":" + second);
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -86,13 +62,9 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
 
         for (int i = 0; i < count; i++) {
             int widgetId = appWidgetIds[0];
-            String number = String.format("%03d", (new Random().nextInt(900) + 100));
 
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.widget_layout);
-
-
-//
             Intent intent = new Intent(context, SimpleWidgetProvider.class);
             intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
@@ -102,38 +74,34 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
             remoteViews.setOnClickPendingIntent(R.id.temp, pendingIntent);
             // load temp and humidity
             loadTempAndHumidity(remoteViews, appWidgetManager, widgetId);
+
+            //load date
+            loadDate(remoteViews);
         }
-        //B1: cap nhat thoi gian
-        final AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        final Intent i = new Intent(context, UpdateService.class);
+//        //B1: cap nhat thoi gian
+        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(context, UpdateService.class);
 
-        if (pendingIntent == null) {
-            pendingIntent = PendingIntent.getService(context, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
-        }
-        manager.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), 60000, pendingIntent);
+        pendingIntent = PendingIntent.getService(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //B2: TEST NOTI
-        final AlarmManager managerNoti = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        final Intent iNoti = new Intent(context, MyBroadcastReceiver.class);
-        pendingIntentNoti = PendingIntent.getBroadcast(context,
-                0, iNoti, 0);
-        managerNoti.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 60000, pendingIntentNoti);
-
-       /* //B3: NOTI
-        //cho thông bao hang ngay luc 16h40
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(System.currentTimeMillis());
-        // c.set(Calendar.HOUR_OF_DAY, 11);
-        // c.set(Calendar.MINUTE, 26);
-        c.set(Calendar.HOUR_OF_DAY, 2);
-        c.set(Calendar.MINUTE, 38);
-        Intent intent = new Intent(context, MyBroadcastReceiver.class);
-        pendingIntentwakeup = PendingIntent.getBroadcast(context,
-                0, intent, 0);
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntentwakeup);
-    */
+        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, 1000,
+                1000, pendingIntent);
+//        //B2: TEST NOTI
+//        final AlarmManager managerNoti = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//        final Intent iNoti = new Intent(context, MyBroadcastReceiver.class);
+//        pendingIntentNoti = PendingIntent.getBroadcast(context,
+//                0, iNoti, 0);
+//        managerNoti.setInexactRepeating(AlarmManager.RTC_WAKEUP, 1000, 1000, pendingIntentNoti);
     }
+
+    private void loadDate(RemoteViews remoteViews) {
+        remoteViews.setTextViewText(R.id.weather, getCurrentDate());
+    }
+
+    public String getCurrentDate() {
+        return DateFormat.format("MMMM dd, yyyy", new Date()).toString();
+    }
+
 
     private void loadTempAndHumidity(final RemoteViews remoteViews, final AppWidgetManager appWidgetManager, final int widgetId) {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
@@ -148,8 +116,12 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                 public void onResponse(Call<List<Environment>> call, Response<List<Environment>> response) {
                     Environment environment = response.body().get(0);
                     if (response.code() == 200 && environment != null) {
-                        remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
-                        remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
+                        Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
+                        if (device != null) {
+                            remoteViews.setTextViewText(R.id.tvLocation, device.getLocation());
+                            remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
+                            remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
+                        }
 
                         appWidgetManager.updateAppWidget(widgetId, remoteViews);
                     }

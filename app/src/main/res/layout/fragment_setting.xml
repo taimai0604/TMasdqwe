@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginTop="8dp"
-                        android:text="Điều kiển đèn" />
+                        android:text="Thông báo nhiệt vượt ngưỡng" />
 
                     <TextView
                         android:id="@+id/tvLedControl"
@@ -80,8 +80,9 @@
                         android:textColor="#cccccc" />
 
                     <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/switch_button_NotinControlLedState"
+                        android:id="@+id/sbNotificationTemp"
                         style="@style/MD"
+                        android:checked="false"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -90,276 +91,277 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <!--end điều kiển-->
-            <!--2-->
-            <LinearLayout
-                android:id="@+id/id4"
-                android:layout_width="fill_parent"
-                android:layout_height="80dp"
-                android:background="#ffffff"
-                android:elevation="1dp"
-                android:outlineProvider="bounds">
+            <!--&lt;!&ndash;end điều kiển&ndash;&gt;-->
+            <!--&lt;!&ndash;2&ndash;&gt;-->
+            <!--<LinearLayout-->
+                <!--android:id="@+id/id4"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:background="#ffffff"-->
+                <!--android:elevation="1dp"-->
+                <!--android:outlineProvider="bounds">-->
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent">-->
 
-                    <TextView
-                        android:id="@+id/Notification"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Thông báo" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/Notification"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="8dp"-->
+                        <!--android:layout_marginTop="8dp"-->
+                        <!--android:text="Thông báo" />-->
 
-                    <TextView
-                        android:id="@+id/NotificationState"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/Notification"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="4dp"
-                        android:text="Bật"
-                        android:textColor="#cccccc" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/NotificationState"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@+id/Notification"-->
+                        <!--android:layout_marginLeft="8dp"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:text="Bật"-->
+                        <!--android:textColor="#cccccc" />-->
 
-                    <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/switch_button_NotificationState"
-                        style="@style/MD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="10dp"
-                        android:padding="16dp" />
-                </RelativeLayout>
-            </LinearLayout>
+                    <!--<com.kyleduo.switchbutton.SwitchButton-->
+                        <!--android:id="@+id/switch_button_NotificationState"-->
+                        <!--style="@style/MD"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:padding="16dp" />-->
+                <!--</RelativeLayout>-->
+            <!--</LinearLayout>-->
 
-            <LinearLayout
-                android:id="@+id/id6"
-                android:layout_width="fill_parent"
-                android:layout_height="80dp"
-                android:background="#ffffff"
-                android:outlineProvider="bounds">
+            <!--<LinearLayout-->
+                <!--android:id="@+id/id6"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:background="#ffffff"-->
+                <!--android:outlineProvider="bounds">-->
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-
-                    <TextView
-                        android:id="@+id/NotificationDaily"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="8dp"
-
-                        android:text="Thông báo hằng ngày" />
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent">-->
 
 
-                    <TextView
-                        android:id="@+id/NotificationDailyState"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/NotificationDaily"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="4dp"
-                        android:text="Bật"
-                        android:textColor="#cccccc" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/NotificationDaily"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="58dp"-->
 
-                    <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/switch_button_NotificationDaily"
-                        style="@style/MD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="10dp"
-                        android:padding="16dp" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/id3"
-                android:layout_width="fill_parent"
-                android:layout_height="80dp"
-                android:background="#ffffff"
-                android:outlineProvider="bounds">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                        <!--android:text="Thông báo hằng ngày"-->
+                        <!--android:layout_alignParentTop="true"-->
+                        <!--android:layout_alignStart="@+id/NotificationDailyState" />-->
 
 
-                    <TextView
-                        android:id="@+id/timeNotification"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Thời gian" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/NotificationDailyState"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@+id/NotificationDaily"-->
+                        <!--android:layout_marginLeft="58dp"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:text="Bật"-->
+                        <!--android:textColor="#cccccc" />-->
 
-                    <TextView
-                        android:id="@+id/timeNotificationValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/timeNotification"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="4dp"
-                        android:text="15:47"
-                        android:textColor="#cccccc" />
+                    <!--<com.kyleduo.switchbutton.SwitchButton-->
+                        <!--android:id="@+id/switch_button_NotificationDaily"-->
+                        <!--style="@style/MD"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:padding="16dp" />-->
 
-                </RelativeLayout>
+                <!--</RelativeLayout>-->
 
-            </LinearLayout>
+            <!--</LinearLayout>-->
 
-            <LinearLayout
-                android:id="@+id/id2"
-                android:layout_width="fill_parent"
-                android:layout_height="80dp"
-                android:background="#ffffff"
-                android:outlineProvider="bounds">
+            <!--<LinearLayout-->
+                <!--android:id="@+id/id3"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:background="#ffffff"-->
+                <!--android:outlineProvider="bounds">-->
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent">-->
 
-                    <TextView
-                        android:id="@+id/dateNotification"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Ngày" />
 
-                    <TextView
-                        android:id="@+id/dateNotificationValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/dateNotification"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="4dp"
-                        android:text="07 / 27 / 2017"
-                        android:textColor="#cccccc" />
-                </RelativeLayout>
+                    <!--<TextView-->
+                        <!--android:id="@+id/timeNotification"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="58dp"-->
+                        <!--android:layout_marginTop="8dp"-->
+                        <!--android:text="Thời gian" />-->
 
-            </LinearLayout>
+                    <!--<TextView-->
+                        <!--android:id="@+id/timeNotificationValue"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@+id/timeNotification"-->
+                        <!--android:layout_marginLeft="58dp"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:text="15:47"-->
+                        <!--android:textColor="#cccccc" />-->
 
-            <!--3-->
-            <LinearLayout
-                android:id="@+id/id11"
-                android:layout_width="fill_parent"
-                android:layout_height="80dp"
-                android:background="#ffffff"
-                android:elevation="1dp"
+                <!--</RelativeLayout>-->
 
-                android:outlineProvider="bounds">
+            <!--</LinearLayout>-->
 
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="match_parent">
+            <!--<LinearLayout-->
+                <!--android:id="@+id/id2"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:background="#ffffff"-->
+                <!--android:outlineProvider="bounds">-->
 
-                    <TextView
-                        android:id="@+id/UpdateInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Cập nhật thông tin" />
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent">-->
 
-                    <TextView
-                        android:id="@+id/UpdateInfoState"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/UpdateInfo"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="4dp"
-                        android:text="Bật"
-                        android:textColor="#cccccc" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/dateNotification"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="58dp"-->
+                        <!--android:layout_marginTop="8dp"-->
+                        <!--android:text="Ngày" />-->
 
-                    <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/switch_button_UpdateInfo"
-                        style="@style/MD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="10dp"
-                        android:padding="16dp" />
-                </RelativeLayout>
-            </LinearLayout>
+                    <!--<TextView-->
+                        <!--android:id="@+id/dateNotificationValue"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@+id/dateNotification"-->
+                        <!--android:layout_marginLeft="58dp"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:text="07 / 27 / 2017"-->
+                        <!--android:textColor="#cccccc" />-->
+                <!--</RelativeLayout>-->
 
-            <LinearLayout
-                android:id="@+id/id10"
-                android:layout_width="fill_parent"
-                android:layout_height="80dp"
-                android:background="#ffffff"
-                android:outlineProvider="bounds">
+            <!--</LinearLayout>-->
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+            <!--&lt;!&ndash;3&ndash;&gt;-->
+            <!--<LinearLayout-->
+                <!--android:id="@+id/id11"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:background="#ffffff"-->
+                <!--android:elevation="1dp"-->
 
-                    <TextView
-                        android:id="@+id/AutoUpdateInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Tự động cập nhật thông tin" />
+                <!--android:outlineProvider="bounds">-->
 
-                    <TextView
-                        android:id="@+id/AutoAutoUpdateInfoState"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/AutoUpdateInfo"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="4dp"
-                        android:text="Bật"
-                        android:textColor="#cccccc" />
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="fill_parent"-->
+                    <!--android:layout_height="match_parent">-->
 
-                    <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/switch_button_AutoUpdateInfo"
-                        style="@style/MD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="10dp"
-                        android:padding="16dp" />
-                </RelativeLayout>
+                    <!--<TextView-->
+                        <!--android:id="@+id/UpdateInfo"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="8dp"-->
+                        <!--android:layout_marginTop="8dp"-->
+                        <!--android:text="Cập nhật thông tin" />-->
 
-            </LinearLayout>
+                    <!--<TextView-->
+                        <!--android:id="@+id/UpdateInfoState"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@+id/UpdateInfo"-->
+                        <!--android:layout_marginLeft="8dp"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:text="Bật"-->
+                        <!--android:textColor="#cccccc" />-->
 
-            <LinearLayout
-                android:id="@+id/id9"
-                android:layout_width="fill_parent"
-                android:layout_height="80dp"
-                android:background="#ffffff"
-                android:outlineProvider="bounds">
+                    <!--<com.kyleduo.switchbutton.SwitchButton-->
+                        <!--android:id="@+id/switch_button_UpdateInfo"-->
+                        <!--style="@style/MD"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:padding="16dp" />-->
+                <!--</RelativeLayout>-->
+            <!--</LinearLayout>-->
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+            <!--<LinearLayout-->
+                <!--android:id="@+id/id10"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:background="#ffffff"-->
+                <!--android:outlineProvider="bounds">-->
 
-                    <TextView
-                        android:id="@+id/UpdateInfoTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Thời gian" />
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent">-->
 
-                    <TextView
+                    <!--<TextView-->
+                        <!--android:id="@+id/AutoUpdateInfo"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="58dp"-->
+                        <!--android:layout_marginTop="8dp"-->
+                        <!--android:text="Tự động cập nhật thông tin" />-->
 
-                        android:id="@+id/UpdateInfoTimeValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/UpdateInfoTime"
-                        android:layout_marginLeft="58dp"
-                        android:layout_marginTop="4dp"
-                        android:text="30 phút"
-                        android:textColor="#cccccc" />
-                </RelativeLayout>
+                    <!--<TextView-->
+                        <!--android:id="@+id/AutoAutoUpdateInfoState"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@+id/AutoUpdateInfo"-->
+                        <!--android:layout_marginLeft="58dp"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:text="Bật"-->
+                        <!--android:textColor="#cccccc" />-->
 
-            </LinearLayout>
+                    <!--<com.kyleduo.switchbutton.SwitchButton-->
+                        <!--android:id="@+id/switch_button_AutoUpdateInfo"-->
+                        <!--style="@style/MD"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:padding="16dp" />-->
+                <!--</RelativeLayout>-->
+
+            <!--</LinearLayout>-->
+
+            <!--<LinearLayout-->
+                <!--android:id="@+id/id9"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:background="#ffffff"-->
+                <!--android:outlineProvider="bounds">-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/UpdateInfoTime"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="58dp"-->
+                        <!--android:layout_marginTop="8dp"-->
+                        <!--android:text="Thời gian" />-->
+
+                    <!--<TextView-->
+
+                        <!--android:id="@+id/UpdateInfoTimeValue"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@+id/UpdateInfoTime"-->
+                        <!--android:layout_marginLeft="58dp"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:text="30 phút"-->
+                        <!--android:textColor="#cccccc" />-->
+                <!--</RelativeLayout>-->
+
+            <!--</LinearLayout>-->
 
 
             <RelativeLayout

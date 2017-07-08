@@ -2,6 +2,9 @@ package com.tm.environmenttm;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +27,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,6 +36,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.pubnub.api.PubNub;
+import com.pubnub.api.callbacks.PNCallback;
+import com.pubnub.api.callbacks.SubscribeCallback;
+import com.pubnub.api.enums.PNStatusCategory;
+import com.pubnub.api.models.consumer.PNPublishResult;
+import com.pubnub.api.models.consumer.PNStatus;
+import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
+import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.fragment.DeviceFragment;
@@ -38,6 +51,8 @@ import com.tm.environmenttm.fragment.HomeFragment;
 import com.tm.environmenttm.fragment.SettingFragment;
 import com.tm.environmenttm.map.TestMapFragment;
 import com.tm.environmenttm.model.Account;
+import com.tm.environmenttm.model.Device;
+import com.tm.environmenttm.model.PubnubTM;
 import com.tm.environmenttm.model.RealmTM;
 
 import io.realm.Realm;
@@ -58,10 +73,15 @@ public class Home extends AppCompatActivity
     private TextView tvFullName;
     private TextView tvEmail;
 
+    private static PubNub pubnub;
+    private Context context = this;
+
     public static boolean refresh = false;
 
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
+
+    Device device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +105,7 @@ public class Home extends AppCompatActivity
 
         //get account
         account = (Account) RealmTM.INSTANT.findFirst(Account.class);
+        device = (Device) RealmTM.INSTANT.findFirst(Device.class);
 
 
         tvFullName.setText(account.getFullName());
@@ -93,7 +114,7 @@ public class Home extends AppCompatActivity
         // manager fragment
         fragmentManager = getSupportFragmentManager();
 
-        Log.d(TAG, "onCreate: "+fragmentManager.getBackStackEntryCount());
+        Log.d(TAG, "onCreate: " + fragmentManager.getBackStackEntryCount());
         frgContent = new HomeFragment();
         addFragment(frgContent, ConstantValue.FRG_HOME);
         refresh = false;
@@ -130,7 +151,7 @@ public class Home extends AppCompatActivity
             replaceFragment(frgContent, frgTag);
         } else if (id == R.id.nav_setting) {
             frgTag = ConstantValue.FRG_SETTING;
-            frgContent = new SettingFragment();
+            frgContent = new SettingFragment(getApplicationContext());
             replaceFragment(frgContent, frgTag);
         } else if (id == R.id.nav_logout) {
             RealmTM.INSTANT.logout();
