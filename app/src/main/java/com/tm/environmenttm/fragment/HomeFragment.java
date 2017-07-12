@@ -193,122 +193,123 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         call.enqueue(new Callback<List<Environment>>() {
             @Override
             public void onResponse(Call<List<Environment>> call, Response<List<Environment>> response) {
-                // add data
-                ArrayList<Entry> temperatures = new ArrayList<Entry>();
-                ArrayList<Entry> humiditys = new ArrayList<Entry>();
-                ArrayList<Entry> heatIndexs = new ArrayList<Entry>();
-                ArrayList<Entry> dewPoint = new ArrayList<Entry>();
-                int count = 1;
-                for (Environment environment : response.body()) {
-                    temperatures.add(new Entry(count, environment.getTempC()));
-                    heatIndexs.add(new Entry(count, environment.getHeatIndex()));
-                    humiditys.add(new Entry(count, environment.getHumidity()));
-                    dewPoint.add(new Entry(count, environment.getDewPoint()));
-                    count++;
-                }
-
-                LineDataSet set1;
-
-
-                if (mChart.getData() != null &&
-                        mChart.getData().getDataSetCount() > 0) {
-                    set1 = (LineDataSet) mChart.getData().getDataSetByIndex(0);
-                    set1.setValues(temperatures);
-                    mChart.getData().notifyDataChanged();
-                    mChart.notifyDataSetChanged();
-                } else {
-                    // create a dataset and give it a type
-                    set1 = new LineDataSet(temperatures, "Temperature");
-
-                    set1.setDrawIcons(false);
-
-                    // set the line to be drawn like this "- - - - - -"
-                    set1.enableDashedLine(10f, 5f, 0f);
-                    set1.enableDashedHighlightLine(10f, 5f, 0f);
-                    set1.setColor(Color.BLACK);
-                    set1.setCircleColor(Color.BLACK);
-                    set1.setLineWidth(1f);
-                    set1.setCircleRadius(3f);
-                    set1.setDrawCircleHole(false);
-                    set1.setValueTextSize(9f);
-                    set1.setDrawFilled(true);
-                    set1.setFormLineWidth(1f);
-                    set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
-                    set1.setFormSize(15.f);
-
-                    if (Utils.getSDKInt() >= 18) {
-                        // fill drawable only supported on api level 18 and above
-                        Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.fade_red);
-                        set1.setFillDrawable(drawable);
-                    } else {
-                        set1.setFillColor(Color.BLACK);
+                if (getContext() != null) {
+                    // add data
+                    ArrayList<Entry> temperatures = new ArrayList<Entry>();
+                    ArrayList<Entry> humiditys = new ArrayList<Entry>();
+                    ArrayList<Entry> heatIndexs = new ArrayList<Entry>();
+                    ArrayList<Entry> dewPoint = new ArrayList<Entry>();
+                    int count = 1;
+                    for (Environment environment : response.body()) {
+                        temperatures.add(new Entry(count, environment.getTempC()));
+                        heatIndexs.add(new Entry(count, environment.getHeatIndex()));
+                        humiditys.add(new Entry(count, environment.getHumidity()));
+                        dewPoint.add(new Entry(count, environment.getDewPoint()));
+                        count++;
                     }
 
-                    ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-                    dataSets.add(set1); // add the datasets
+                    LineDataSet set1;
 
-                    // create a data object with the datasets
-                    LineData data = new LineData(dataSets);
 
-                    // set data
-                    mChart.setData(data);
+                    if (mChart.getData() != null &&
+                            mChart.getData().getDataSetCount() > 0) {
+                        set1 = (LineDataSet) mChart.getData().getDataSetByIndex(0);
+                        set1.setValues(temperatures);
+                        mChart.getData().notifyDataChanged();
+                        mChart.notifyDataSetChanged();
+                    } else {
+                        // create a dataset and give it a type
+                        set1 = new LineDataSet(temperatures, "Temperature");
+
+                        set1.setDrawIcons(false);
+
+                        // set the line to be drawn like this "- - - - - -"
+                        set1.enableDashedLine(10f, 5f, 0f);
+                        set1.enableDashedHighlightLine(10f, 5f, 0f);
+                        set1.setColor(Color.BLACK);
+                        set1.setCircleColor(Color.BLACK);
+                        set1.setLineWidth(1f);
+                        set1.setCircleRadius(3f);
+                        set1.setDrawCircleHole(false);
+                        set1.setValueTextSize(9f);
+                        set1.setDrawFilled(true);
+                        set1.setFormLineWidth(1f);
+                        set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
+                        set1.setFormSize(15.f);
+
+                        if (Utils.getSDKInt() >= 18) {
+                            // fill drawable only supported on api level 18 and above
+                            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.fade_red);
+                            set1.setFillDrawable(drawable);
+                        } else {
+                            set1.setFillColor(Color.BLACK);
+                        }
+
+                        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+                        dataSets.add(set1); // add the datasets
+
+                        // create a data object with the datasets
+                        LineData data = new LineData(dataSets);
+
+                        // set data
+                        mChart.setData(data);
+                    }
+
+                    mChart.animateX(2500);
+
+                    // get the legend (only possible after setting data)
+                    Legend l = mChart.getLegend();
+
+                    // modify the legend ...
+                    l.setForm(Legend.LegendForm.LINE);
+
+                    //--------list view chart--------------
+                    LineDataSet d1 = new LineDataSet(heatIndexs, "Heat index");
+                    d1.setLineWidth(2.5f);
+                    d1.setCircleRadius(4.5f);
+                    d1.setHighLightColor(Color.RED);
+                    d1.setColor(Color.RED);
+                    d1.setCircleColor(Color.RED);
+                    d1.setDrawValues(true);
+
+                    LineDataSet d2 = new LineDataSet(dewPoint, "Dew point");
+                    d2.setLineWidth(2.5f);
+                    d2.setCircleRadius(4.5f);
+                    d2.setHighLightColor(Color.GREEN);
+                    d2.setColor(Color.GREEN);
+                    d2.setCircleColor(Color.GREEN);
+                    d2.setDrawValues(true);
+
+                    LineDataSet d3 = new LineDataSet(humiditys, "Humidity");
+                    d3.setLineWidth(2.5f);
+                    d3.setCircleRadius(4.5f);
+                    d3.setHighLightColor(Color.BLUE);
+                    d3.setColor(Color.BLUE);
+                    d3.setCircleColor(Color.BLUE);
+                    d3.setDrawValues(true);
+
+                    ArrayList<ILineDataSet> sets = new ArrayList<ILineDataSet>();
+                    sets.add(d1);
+                    sets.add(d2);
+
+                    ArrayList<ILineDataSet> sets1 = new ArrayList<ILineDataSet>();
+                    sets1.add(d3);
+
+
+                    LineData cd = new LineData(sets);
+                    LineData cd1 = new LineData(sets1);
+
+                    ArrayList<ChartItem> list = new ArrayList<ChartItem>();
+                    list.add(new LineChartItem(cd, getContext()));
+                    list.add(new LineChartItem(cd1, getContext()));
+
+                    ChartDataAdapter cda = new ChartDataAdapter(getContext(), list);
+                    lvChart.setAdapter(cda);
+
+
+                    //
+                    svHome.scrollTo(0, 0);
                 }
-
-                mChart.animateX(2500);
-
-                // get the legend (only possible after setting data)
-                Legend l = mChart.getLegend();
-
-                // modify the legend ...
-                l.setForm(Legend.LegendForm.LINE);
-
-                //--------list view chart--------------
-                LineDataSet d1 = new LineDataSet(heatIndexs, "Heat index");
-                d1.setLineWidth(2.5f);
-                d1.setCircleRadius(4.5f);
-                d1.setHighLightColor(Color.RED);
-                d1.setColor(Color.RED);
-                d1.setCircleColor(Color.RED);
-                d1.setDrawValues(true);
-
-                LineDataSet d2 = new LineDataSet(dewPoint, "Dew point");
-                d2.setLineWidth(2.5f);
-                d2.setCircleRadius(4.5f);
-                d2.setHighLightColor(Color.GREEN);
-                d2.setColor(Color.GREEN);
-                d2.setCircleColor(Color.GREEN);
-                d2.setDrawValues(true);
-
-                LineDataSet d3 = new LineDataSet(humiditys, "Humidity");
-                d3.setLineWidth(2.5f);
-                d3.setCircleRadius(4.5f);
-                d3.setHighLightColor(Color.BLUE);
-                d3.setColor(Color.BLUE);
-                d3.setCircleColor(Color.BLUE);
-                d3.setDrawValues(true);
-
-                ArrayList<ILineDataSet> sets = new ArrayList<ILineDataSet>();
-                sets.add(d1);
-                sets.add(d2);
-
-                ArrayList<ILineDataSet> sets1 = new ArrayList<ILineDataSet>();
-                sets1.add(d3);
-
-
-                LineData cd = new LineData(sets);
-                LineData cd1 = new LineData(sets1);
-
-                ArrayList<ChartItem> list = new ArrayList<ChartItem>();
-                list.add(new LineChartItem(cd, getContext()));
-                list.add(new LineChartItem(cd1, getContext()));
-
-                ChartDataAdapter cda = new ChartDataAdapter(getContext(), list);
-                lvChart.setAdapter(cda);
-
-
-                //
-                svHome.scrollTo(0, 0);
-
             }
 
             @Override
@@ -429,7 +430,8 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                dialog.dismiss();
+//                ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
             }
         });
     }
@@ -455,15 +457,15 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                 if (device == null) {
                     ConstantFunction.showToast(getContext(), "no location");
                 } else {
-                    frgTag = "webview";
+                    frgTag = ConstantValue.FRG_DEVICE_REAL_TIME;
                     frgContent = new StatictisFragment();
-                    ConstantFunction.replaceFragment(getFragmentManager(), R.id.frgContent, frgContent, frgTag);
+                    ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, frgContent, frgTag);
                 }
                 break;
             case R.id.action_control:
                 frgTag = ConstantValue.FRG_DEVICE_CONTROLLER;
                 frgContent = new DeviceControllerFragment();
-                ConstantFunction.replaceFragment(getFragmentManager(), R.id.frgContent, frgContent, frgTag);
+                ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, frgContent, frgTag);
                 break;
         }
         return super.onOptionsItemSelected(item);

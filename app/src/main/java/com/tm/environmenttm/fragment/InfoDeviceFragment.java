@@ -98,7 +98,7 @@ public class InfoDeviceFragment extends Fragment {
             bundle.putBoolean("active",
                     (device.isActive()));
             fragment.setArguments(bundle);
-            ConstantFunction.replaceFragment(getFragmentManager(), R.id.frgContent, fragment, "edit_device");
+            ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, fragment, "edit_device");
             return true;
         }
 

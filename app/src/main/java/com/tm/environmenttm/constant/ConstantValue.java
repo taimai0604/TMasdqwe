@@ -10,6 +10,7 @@ public class ConstantValue {
     public static final String FRG_ADD_DEVICE= "add_device";
     public static final String FRG_DEVICE_CONTROLLER = "device_controller";
     public static final String FRG_DEVICE = "device";
+    public static final String FRG_DEVICE_REAL_TIME = "device_real_time";
     public static final String FRG_MAP = "map";
     public static final String FRG_SETTING = "settting";
 
@@ -27,7 +28,8 @@ public class ConstantValue {
 
     public static final String SUB_PUBNUB = "sub-c-c8dbb904-57bc-11e7-af75-02ee2ddab7fe";
     public static final String PUB_PUBNUB = "pub-c-cd864c3f-3537-4adb-95d0-40c3fb8116bb";
-    public static final String CHANNEL_NOTIFICATION_TEMP = "notification_temp";
+
+    public static final String CHANNEL_NOTIFICATION_TEMP = "temp";
 
 
 }

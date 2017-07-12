@@ -46,7 +46,7 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
         View view = inflater.inflate(R.layout.fragment_device_controller, container, false);
         device = (Device) RealmTM.INSTANT.findFirst(Device.class);
         sbLedControl = (SwitchButton) view.findViewById(R.id.sbLedControl);
-        tvLedControl = (TextView) view.findViewById(R.id.tvLedControl);
+        tvLedControl = (TextView) view.findViewById(R.id.tvNotificationTemp);
         tvValueTimeDelay = (TextView) view.findViewById(R.id.tvValueTimeDelay);
         tvTitleTimeDelay = (TextView) view.findViewById(R.id.tvTitleTimeDelay);
 

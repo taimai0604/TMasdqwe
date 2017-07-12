@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,14 +28,11 @@ import com.tm.environmenttm.fragment.InfoDeviceFragment;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.ResponeBoolean;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by taima on 06/27/2017.
@@ -48,7 +44,7 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
 
     @Override
     public void onClick(View v) {
-        int position = (Integer) v.getTag();
+        final int position = (Integer) v.getTag();
         Object object = getItem(position);
 
         final Device dataModel = (Device) object;
@@ -63,8 +59,8 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                Toast.makeText(context, "delete " + dataModel.getNameDevice(), Toast.LENGTH_SHORT).show();
-
+                                data.remove(position);
+                                notifyDataSetChanged();
                             }
                         })
                         .show();
@@ -180,7 +176,7 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
             mFragment.setArguments(bundle);
 
             FragmentManager manager = ((FragmentActivity) mContext).getSupportFragmentManager();
-            ConstantFunction.replaceFragment(manager, R.id.frgContent, mFragment, ConstantValue.FRG_INFO_DEVICE);
+            ConstantFunction.replaceFragmentHasBackStack(manager, R.id.frgContent, mFragment, ConstantValue.FRG_INFO_DEVICE);
         }
 
     }

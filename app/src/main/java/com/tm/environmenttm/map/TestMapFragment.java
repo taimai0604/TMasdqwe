@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -35,6 +36,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.tm.environmenttm.R;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
@@ -46,6 +49,8 @@ import com.tm.environmenttm.fragment.InfoDeviceFragment;
 import com.tm.environmenttm.model.AddressGeo;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.RealmTM;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,6 +67,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 public class TestMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -87,6 +93,7 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
     GoogleApiClient mGoogleApiClient;
     private GoogleMap googleMap;
     LocationRequest mLocationRequest;
+    Polyline polyline;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -291,7 +298,7 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 //add new
                 RealmTM.INSTANT.addRealm(device);
 
-                ConstantFunction.replaceFragment(getFragmentManager(),R.id.frgContent,new HomeFragment(),ConstantValue.FRG_HOME);
+                ConstantFunction.replaceFragment(getFragmentManager(), R.id.frgContent, new HomeFragment(), ConstantValue.FRG_HOME);
 
                 //set dia diem moi
 //                String address = "khu phố 6, Thủ Đức, Hồ Chí Minh, Việt Nam";
@@ -312,11 +319,11 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 Bundle bundle = new Bundle();
 
                 bundle.putSerializable("device", device);
-                bundle.putBoolean("active",(device.isActive()));
+                bundle.putBoolean("active", (device.isActive()));
                 Fragment fragment = new InfoDeviceFragment();
                 fragment.setArguments(bundle);
 
-                ConstantFunction.replaceFragment(getFragmentManager(),R.id.frgContent, fragment, ConstantValue.FRG_INFO_DEVICE);
+                ConstantFunction.replaceFragment(getFragmentManager(), R.id.frgContent, fragment, ConstantValue.FRG_INFO_DEVICE);
             }
         };
         infoButton2.setOnTouchListener(infoButtonListener);
@@ -334,18 +341,25 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
             @Override
             public View getInfoContents(Marker marker) {
 
-                if(marker.getPosition().latitude == locationGPS.latitude &&
-                        marker.getPosition().longitude == locationGPS.longitude){
+                if (marker.getPosition().latitude == locationGPS.latitude &&
+                        marker.getPosition().longitude == locationGPS.longitude) {
                     infoTitleGPS.setText(marker.getTitle());
                     infoSnippetGPS.setText(marker.getSnippet());
                     mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindowGPS);
                     return infoWindowGPS;
-                }else{
+                } else {
                     infoTitle.setText(marker.getTitle());
                     infoSnippet.setText(marker.getSnippet());
                     infoButtonListener.setMarker(marker);
                     infoButtonListener1.setMarker(marker);
                     mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+
+                    //chi duong
+                    String url = getUrlDirection(locationGPS, marker.getPosition());
+                    Log.d("direction", url);
+                    FetchUrlDirection urlDirection = new FetchUrlDirection();
+                    urlDirection.execute(url);
+
                     return infoWindow;
                 }
             }
@@ -377,7 +391,7 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
         call.enqueue(new Callback<List<Device>>() {
             @Override
             public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
-                if(getContext() != null){
+                if (getContext() != null) {
                     listDevice = response.body();
                     for (int i = 0; i < listDevice.size(); i++) {
                         Log.i("ListDEVICEDir", listDevice.get(i).getNameDevice() + " - " + listDevice.get(i).getLatitude() + " : " + listDevice.get(i).getLongitude());
@@ -579,4 +593,138 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
     }
+
+    /*Chi duong*/
+    private String getUrlDirection(LatLng origin, LatLng dest) {
+
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + sensor;
+
+        // Output format
+        String output = "json";
+
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+        return url;
+
+    }
+
+    // Fetches data from url passed
+    private class FetchUrlDirection extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            // For storing data from web service
+            String data = "";
+
+            try {
+                // Fetching the data from web service
+                data = downloadUrl(url[0]);
+                Log.d("Background Task data", data.toString());
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            ParserTaskDirection parserTask = new ParserTaskDirection();
+
+            // Invokes the thread for parsing the JSON data
+            parserTask.execute(result);
+
+        }
+    }
+
+    /**
+     * A class to parse the Google Places in JSON format
+     */
+    private class ParserTaskDirection extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+
+        // Parsing the data in non-ui thread
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                Log.d("ParserTask", jsonData[0].toString());
+                DataParserDirection parser = new DataParserDirection();
+                Log.d("ParserTask", parser.toString());
+
+                // Starts parsing data
+                routes = parser.parse(jObject);
+                Log.d("ParserTask", "Executing routes");
+                Log.d("ParserTask", routes.toString());
+
+            } catch (Exception e) {
+                Log.d("ParserTask", e.toString());
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        // Executes in UI thread, after the parsing process
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            ArrayList<LatLng> points;
+            PolylineOptions lineOptions = null;
+
+            // Traversing through all the routes
+            for (int i = 0; i < result.size(); i++) {
+                points = new ArrayList<>();
+                lineOptions = new PolylineOptions();
+
+                // Fetching i-th route
+                List<HashMap<String, String>> path = result.get(i);
+
+                // Fetching all the points in i-th route
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap<String, String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                // Adding all the points in the route to LineOptions
+                lineOptions.addAll(points);
+                lineOptions.width(10);
+                lineOptions.color(Color.BLUE);
+
+                Log.d("onPostExecute", "onPostExecute lineoptions decoded");
+
+            }
+
+            // Drawing polyline in the Google Map for the i-th route
+            if (lineOptions != null) {
+                if (polyline != null) polyline.remove();
+                polyline = googleMap.addPolyline(lineOptions);
+            } else
+
+            {
+                Log.d("onPostExecute", "without Polylines drawn");
+            }
+        }
+    }
+
+
 }

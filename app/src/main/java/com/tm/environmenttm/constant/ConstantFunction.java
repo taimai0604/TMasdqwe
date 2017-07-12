@@ -28,8 +28,8 @@ public class ConstantFunction {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static MaterialDialog showProgressHorizontalIndeterminateDialog(Context context){
-        MaterialDialog  dialog =  new MaterialDialog.Builder(context)
+    public static MaterialDialog showProgressHorizontalIndeterminateDialog(Context context) {
+        MaterialDialog dialog = new MaterialDialog.Builder(context)
                 .title(context.getString(R.string.title_progress))
                 .content(context.getString(R.string.progress_waiting))
                 .progress(true, 0)
@@ -61,22 +61,35 @@ public class ConstantFunction {
     }
 
     public static void replaceFragment(FragmentManager fragmentManager, int idFragmentContent, Fragment fragment, String tag) {
+        Fragment checkFragment = fragmentManager.findFragmentByTag(tag);
+        if (checkFragment == null) {
+            replaceFragmentNotBackStack(fragmentManager, idFragmentContent, fragment, tag);
+        } else {
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(idFragmentContent, checkFragment, tag);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
+    }
+
+    public static void replaceFragmentHasBackStack(FragmentManager fragmentManager, int idFragmentContent, Fragment fragment, String tag) {
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(idFragmentContent, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
     public static void replaceFragmentNotBackStack(FragmentManager fragmentManager, int idFragmentContent, Fragment fragment, String tag) {
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(idFragmentContent, fragment, tag);
         fragmentTransaction.commit();
     }
 
-    public static void changeTitleBar(Activity activity, String title){
+    public static void changeTitleBar(Activity activity, String title) {
         ((AppCompatActivity) activity).getSupportActionBar().setTitle(title);
     }
 
-    public static void cleanFragment(FragmentManager fragmentManager){
+    public static void cleanFragment(FragmentManager fragmentManager) {
         List<Fragment> list = new ArrayList<Fragment>();
         Fragment infoDevice = fragmentManager.findFragmentByTag(ConstantValue.FRG_INFO_DEVICE);
         Fragment editDevice = fragmentManager.findFragmentByTag(ConstantValue.FRG_INFO_DEVICE);
@@ -88,8 +101,8 @@ public class ConstantFunction {
         list.add(addDevice);
         list.add(home);
 
-        for (Fragment fragment: list) {
-            if(fragment != null)
+        for (Fragment fragment : list) {
+            if (fragment != null)
                 fragmentManager.beginTransaction().remove(fragment).commit();
         }
 
@@ -97,7 +110,7 @@ public class ConstantFunction {
 
 
     // setting default
-    public static void settingDefault(){
+    public static void settingDefault() {
         ConfigApp configApp = new ConfigApp();
         configApp.setNotificationTemp(false);
         RealmTM.INSTANT.deleteAll(ConfigApp.class);

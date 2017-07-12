@@ -30,7 +30,7 @@
                     android:text="@string/control_led" />
 
                 <TextView
-                    android:id="@+id/tvLedControl"
+                    android:id="@+id/tvNotificationTemp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/NotificationControlLed"
