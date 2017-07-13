@@ -195,7 +195,7 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivContactItem5"
-                android:text="Home"
+                android:text="@string/location"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="#727272" />
 
@@ -217,6 +217,7 @@
         <include layout="@layout/item_divider" />
 
         <RelativeLayout
+            android:id="@+id/layoutKeyThingspeak"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
@@ -252,7 +253,19 @@
                 android:layout_toEndOf="@id/imgKeyThingspeak"
                 android:text="Key ThingSpeak"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#727272" />
+                android:textColor="#727272"
+                android:id="@+id/textView3" />
+
+            <TextView
+                android:id="@+id/tvMoreThingspeak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="35dp"
+                android:text="@string/more"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#727272"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 

@@ -32,6 +32,10 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
     private TextView tvLedControl;
     private TextView tvValueTimeDelay;
     private TextView tvTitleTimeDelay;
+    private TextView tvValueLowTemp;
+    private TextView tvTitleLowTemp;
+    private TextView tvValueHeightTemp;
+    private TextView tvTitleHeightTemp;
     private Device device;
 
 
@@ -50,20 +54,83 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
         tvValueTimeDelay = (TextView) view.findViewById(R.id.tvValueTimeDelay);
         tvTitleTimeDelay = (TextView) view.findViewById(R.id.tvTitleTimeDelay);
 
+        tvValueLowTemp= (TextView) view.findViewById(R.id.tvValueLowTemp);
+        tvTitleLowTemp = (TextView) view.findViewById(R.id.tvTitleLowTemp);
+
+        tvValueHeightTemp = (TextView) view.findViewById(R.id.tvValueHeightTemp);
+        tvTitleHeightTemp = (TextView) view.findViewById(R.id.tvTitleHeightTemp);
+
         loadStatusLed();
 
         loadTimeDelay();
+
+        loadLowTemp();
+
+        loadHeightTemp();
 
 
         sbLedControl.setOnCheckedChangeListener(this);
         tvValueTimeDelay.setOnClickListener(this);
         tvTitleTimeDelay.setOnClickListener(this);
+        tvValueLowTemp.setOnClickListener(this);
+        tvTitleLowTemp.setOnClickListener(this);
+        tvValueHeightTemp.setOnClickListener(this);
+        tvTitleHeightTemp.setOnClickListener(this);
         return view;
+    }
+
+    private void loadHeightTemp() {
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Call<ResponeNumber> call = iServices.getHeightTemp(device.getDeviceId());
+        final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
+        call.enqueue(new Callback<ResponeNumber>() {
+            @Override
+            public void onResponse(Call<ResponeNumber> call, Response<ResponeNumber> response) {
+                if (response.code() == 200) {
+                    tvValueHeightTemp.setText(response.body().getResult() + "");
+                } else {
+                    ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                }
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<ResponeNumber> call, Throwable t) {
+                ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                dialog.dismiss();
+            }
+
+        });
+    }
+
+    private void loadLowTemp() {
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Call<ResponeNumber> call = iServices.getLowTemp(device.getDeviceId());
+        final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
+        call.enqueue(new Callback<ResponeNumber>() {
+            @Override
+            public void onResponse(Call<ResponeNumber> call, Response<ResponeNumber> response) {
+                if (response.code() == 200) {
+                    tvValueLowTemp.setText(response.body().getResult() + "");
+                } else {
+                    ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                }
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<ResponeNumber> call, Throwable t) {
+                ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                dialog.dismiss();
+            }
+
+        });
     }
 
     private void loadTimeDelay() {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
         Call<ResponeNumber> call = iServices.getTimeDelay(device.getDeviceId());
+        final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
         call.enqueue(new Callback<ResponeNumber>() {
             @Override
             public void onResponse(Call<ResponeNumber> call, Response<ResponeNumber> response) {
@@ -72,11 +139,13 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
                 } else {
                     ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
                 }
+                dialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<ResponeNumber> call, Throwable t) {
                 ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                dialog.dismiss();
             }
 
         });
@@ -85,6 +154,7 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
     private void loadStatusLed() {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
         Call<ResponeBoolean> call = iServices.isLed(device.getDeviceId());
+        final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
         call.enqueue(new Callback<ResponeBoolean>() {
             @Override
             public void onResponse(Call<ResponeBoolean> call, Response<ResponeBoolean> response) {
@@ -99,11 +169,13 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
                 } else {
                     ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
                 }
+                dialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<ResponeBoolean> call, Throwable t) {
                 ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                dialog.dismiss();
             }
 
         });
@@ -178,16 +250,94 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
                                             if (!result.isResult()) {
                                                 ConstantFunction.showToast(getContext(), "control fail");
                                             }
-                                            dialog.dismiss();
                                         } else {
                                             ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
-                                            dialog.dismiss();
                                         }
+                                        dialog.dismiss();
                                     }
 
                                     @Override
                                     public void onFailure(Call<ResponeBoolean> call, Throwable t) {
+                                        dialog.dismiss();
+                                    }
 
+                                });
+                            }
+                        }).show();
+                break;
+            case R.id.tvTitleLowTemp:
+            case R.id.tvValueLowTemp:
+                new MaterialDialog.Builder(getContext())
+                        .title(getResources().getString(R.string.low_temp))
+                        .inputType(InputType.TYPE_CLASS_NUMBER)
+                        .input(getResources().getString(R.string.low_temp), tvValueLowTemp.getText(), new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                                tvValueLowTemp.setText(input);
+                                setTimeDelay(Integer.valueOf(input.toString()));
+                            }
+
+                            private void setTimeDelay(int timeDelay) {
+                                IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+                                Call<ResponeBoolean> call = iServices.setLowTemp(device.getDeviceId(), timeDelay);
+                                final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
+                                call.enqueue(new Callback<ResponeBoolean>() {
+                                    @Override
+                                    public void onResponse(Call<ResponeBoolean> call, Response<ResponeBoolean> response) {
+                                        if (response.code() == 200) {
+                                            ResponeBoolean result = response.body();
+                                            if (!result.isResult()) {
+                                                ConstantFunction.showToast(getContext(), "control fail");
+                                            }
+                                        } else {
+                                            ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                                        }
+                                        dialog.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponeBoolean> call, Throwable t) {
+                                        dialog.dismiss();
+
+                                    }
+
+                                });
+                            }
+                        }).show();
+                break;
+            case R.id.tvTitleHeightTemp:
+            case R.id.tvValueHeightTemp:
+                new MaterialDialog.Builder(getContext())
+                        .title(getResources().getString(R.string.height_temp))
+                        .inputType(InputType.TYPE_CLASS_NUMBER)
+                        .input(getResources().getString(R.string.height_temp), tvValueHeightTemp.getText(), new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                                tvValueHeightTemp.setText(input);
+                                setTimeDelay(Integer.valueOf(input.toString()));
+                            }
+
+                            private void setTimeDelay(int timeDelay) {
+                                IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+                                Call<ResponeBoolean> call = iServices.setHeightTemp(device.getDeviceId(), timeDelay);
+                                final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
+                                call.enqueue(new Callback<ResponeBoolean>() {
+                                    @Override
+                                    public void onResponse(Call<ResponeBoolean> call, Response<ResponeBoolean> response) {
+                                        if (response.code() == 200) {
+                                            ResponeBoolean result = response.body();
+                                            if (!result.isResult()) {
+                                                ConstantFunction.showToast(getContext(), "control fail");
+                                            }
+                                        } else {
+                                            ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                                        }
+                                        dialog.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponeBoolean> call, Throwable t) {
+                                        dialog.dismiss();
                                     }
 
                                 });

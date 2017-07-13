@@ -74,6 +74,57 @@
                     android:text="@string/default_text_view"
                     android:textColor="#cccccc" />
             </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="#ffffff"
+                android:elevation="1dp"
+                android:outlineProvider="bounds">
+
+                <TextView
+                    android:id="@+id/tvTitleLowTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/low_temp" />
+
+                <TextView
+                    android:id="@+id/tvValueLowTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvTitleLowTemp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/default_text_view"
+                    android:textColor="#cccccc" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="#ffffff"
+                android:elevation="1dp"
+                android:outlineProvider="bounds">
+
+                <TextView
+                    android:id="@+id/tvTitleHeightTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/height_temp" />
+
+                <TextView
+                    android:id="@+id/tvValueHeightTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvTitleHeightTemp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/default_text_view"
+                    android:textColor="#cccccc" />
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 

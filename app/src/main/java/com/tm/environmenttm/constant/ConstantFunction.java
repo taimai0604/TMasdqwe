@@ -61,15 +61,15 @@ public class ConstantFunction {
     }
 
     public static void replaceFragment(FragmentManager fragmentManager, int idFragmentContent, Fragment fragment, String tag) {
-        Fragment checkFragment = fragmentManager.findFragmentByTag(tag);
-        if (checkFragment == null) {
-            replaceFragmentNotBackStack(fragmentManager, idFragmentContent, fragment, tag);
-        } else {
+//        Fragment checkFragment = fragmentManager.findFragmentByTag(tag);
+//        if (checkFragment == null) {
+//            replaceFragmentNotBackStack(fragmentManager, idFragmentContent, fragment, tag);
+//        } else {
             fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(idFragmentContent, checkFragment, tag);
+            fragmentTransaction.replace(idFragmentContent, fragment, tag);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-        }
+//        }
     }
 
     public static void replaceFragmentHasBackStack(FragmentManager fragmentManager, int idFragmentContent, Fragment fragment, String tag) {

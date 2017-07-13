@@ -3,64 +3,103 @@ package com.tm.environmenttm.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.constant.ConstantFunction;
+import com.tm.environmenttm.constant.ConstantURL;
+import com.tm.environmenttm.constant.ConstantValue;
+import com.tm.environmenttm.controller.IRESTfull;
+import com.tm.environmenttm.controller.RetrofitClient;
+import com.tm.environmenttm.map.TestMapFragment;
+import com.tm.environmenttm.model.ChartThingspeak;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditThingspeakFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class EditThingspeakFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private EditText edName;
+    private EditText edContent;
+    private EditText edDecription;
+    private ChartThingspeak chartThingspeak;
 
     public EditThingspeakFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditThingspeakFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditThingspeakFragment newInstance(String param1, String param2) {
-        EditThingspeakFragment fragment = new EditThingspeakFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_thingspeak, container, false);
+
+        setHasOptionsMenu(true);
+        View view = inflater.inflate(R.layout.fragment_edit_thingspeak, container, false);
+        edName = (EditText) view.findViewById(R.id.edNameThingSpeak);
+        edContent = (EditText) view.findViewById(R.id.edContentThingspeak);
+        edDecription = (EditText) view.findViewById(R.id.edDecription);
+
+        chartThingspeak = (ChartThingspeak) getArguments().getSerializable(ConstantValue.THINGSPEAK);
+
+        edName.setText(chartThingspeak.getName());
+        edContent.setText(chartThingspeak.getContent());
+        edDecription.setText(chartThingspeak.getDescription());
+
+        return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_edit_device, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_save) {
+            chartThingspeak.setName(edName.getText().toString());
+            chartThingspeak.setContent(edContent.getText().toString());
+            chartThingspeak.setDescription(edDecription.getText().toString());
+
+            saveChange(chartThingspeak);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void saveChange(ChartThingspeak chartThingspeak) {
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Call<ChartThingspeak> call = iServices.editChartThingspeak(chartThingspeak.getId(), chartThingspeak);
+        // Set up progress before call
+        final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
+        // show it
+        call.enqueue(new Callback<ChartThingspeak>() {
+            @Override
+            public void onResponse(Call<ChartThingspeak> call, Response<ChartThingspeak> response) {
+                if (getContext() != null) {
+                    if (response.body() != null) {
+                        ConstantFunction.showToast(getContext(), "Success!");
+                    } else {
+                        ConstantFunction.showToast(getContext(), "Fail!");
+                    }
+                    dialog.dismiss();
+                    ConstantFunction.popBackStack(getFragmentManager());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChartThingspeak> call, Throwable t) {
+                ConstantFunction.showToast(getContext(), "Fail!");
+                dialog.dismiss();
+            }
+        });
+    }
 }

@@ -56,14 +56,18 @@
     <string name="turnoff">Off</string>
 
     <string name="default_text_view">----</string>
+    <string name="more"><a href="#">More</a></string>
     <string name="title_progress">Progress</string>
     <string name="progress_waiting">Please wait...</string>
     <string name="no_location">no location</string>
+    <string name="location">Location</string>
     <string name="search">Search...</string>
 
     <!--Control device-->
     <string name="control_led">Led</string>
     <string name="time_delay">Time deplay</string>
+    <string name="low_temp">Low temperature</string>
+    <string name="height_temp">Height temperature</string>
 
     <!---->
     <string name="tempc">\u2103</string>

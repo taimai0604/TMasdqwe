@@ -6,7 +6,7 @@ package com.tm.environmenttm.constant;
 
 public class ConstantURL {
     //server
-    public static final String SERVER ="https://cryptic-sea-66379.herokuapp.com/";
+    public static final String SERVER = "https://cryptic-sea-66379.herokuapp.com/";
 
     //account
     public static final String CREATE_ACCOUNT = "api/Accounts";
@@ -20,6 +20,12 @@ public class ConstantURL {
     public static final String GET_TIME_DELAY = "/api/Devices/getTimeDelay";
     public static final String SET_TIME_DELAY = "/api/Devices/setTimeDelay";
 
+    public static final String GET_LOW_TEMP = "/api/Devices/getLowTemp";
+    public static final String SET_LOW_TEMP = "/api/Devices/setLowTemp";
+
+    public static final String GET_HEIGHT_TEMP = "/api/Devices/getHeightTemp";
+    public static final String SET_HEIGHT_TEMP = "/api/Devices/setHeightTemp";
+
 
     //type
     public static final String GET_ALL_TYPE = "/api/Types";
@@ -32,6 +38,8 @@ public class ConstantURL {
 
     //chart thingspeak
     public static final String GET_ALL_CHART_BY_DEVICE_ID = "/api/Devices/{id}/chartThingspeaks";
+    public static final String EDIT_CHART = "/api/chartThingspeaks/{id}";
+    public static final String DELETE_CHART = "/api/chartThingspeaks/{id}";
 
 
 }

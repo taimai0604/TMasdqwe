@@ -8,11 +8,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tm.environmenttm.R;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
+import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.model.Device;
@@ -22,12 +24,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InfoDeviceFragment extends Fragment {
+public class InfoDeviceFragment extends Fragment implements View.OnClickListener {
     private TextView tvNameDevice;
     private TextView tvType;
     private TextView tvDeviceId;
     private TextView tvLocation;
     private TextView tvKeyThingspeak;
+    private TextView tvMoreKeyThingspeak;
+    private RelativeLayout layoutKeyThingspeak;
+
 
     private Device device;
     private boolean mAlreadyLoaded = false;
@@ -39,6 +44,7 @@ public class InfoDeviceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ConstantFunction.changeTitleBar(getActivity(), ConstantValue.TITLE_DEVICE);
         View view = inflater.inflate(R.layout.fragment_info_device, container, false);
         setHasOptionsMenu(true);
 
@@ -47,6 +53,8 @@ public class InfoDeviceFragment extends Fragment {
         tvDeviceId = (TextView) view.findViewById(R.id.edDeviceId);
         tvLocation = (TextView) view.findViewById(R.id.edLocation);
         tvKeyThingspeak = (TextView) view.findViewById(R.id.edKeyThingspeak);
+        tvMoreKeyThingspeak = (TextView) view.findViewById(R.id.tvMoreThingspeak);
+        layoutKeyThingspeak = (RelativeLayout) view.findViewById(R.id.layoutKeyThingspeak);
 
         device = (Device) getArguments().getSerializable("device");
 
@@ -57,6 +65,9 @@ public class InfoDeviceFragment extends Fragment {
         tvKeyThingspeak.setText(device.getKeyThingspeak());
 
         loadTypeForDevice(device.getTypeId());
+
+        tvMoreKeyThingspeak.setOnClickListener(this);
+        layoutKeyThingspeak.setOnClickListener(this);
         return view;
     }
 
@@ -106,4 +117,19 @@ public class InfoDeviceFragment extends Fragment {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvMoreThingspeak:
+            case R.id.layoutKeyThingspeak:
+                Fragment fragment = new ThingspeakFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("device", device);
+                bundle.putBoolean("active",
+                        (device.isActive()));
+                fragment.setArguments(bundle);
+                ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, fragment, ConstantValue.FRG_THINGSPEAK);
+                break;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.tm.environmenttm.CustomModel;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -87,18 +88,19 @@ public class CustomCallbackPubnub extends SubscribeCallback {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, LoginActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-                NotificationCompat.Builder notification =
-                        new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.mipmap.ic_logo)
-                                .setContentTitle(location)
-                                .setContentText(s)
-                                .setContentIntent(pendingIntent).setAutoCancel(true);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, LoginActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+            NotificationCompat.Builder notification =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.mipmap.ic_logo)
+                            .setContentTitle(location)
+                            .setContentText(s)
+                            .setDefaults(Notification.DEFAULT_SOUND)
+                            .setContentIntent(pendingIntent).setAutoCancel(true);
 
-                NotificationManager notificationManager;
-                notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager;
+            notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 
-                notificationManager.notify(0, notification.build());
+            notificationManager.notify(0, notification.build());
         }
 
         @Override

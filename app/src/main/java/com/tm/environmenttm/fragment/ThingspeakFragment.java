@@ -1,109 +1,125 @@
 package com.tm.environmenttm.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.tm.environmenttm.Home;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.adapter.CustomListLocationAdapter;
+import com.tm.environmenttm.adapter.CustomListThingspeakAdapter;
+import com.tm.environmenttm.constant.ConstantFunction;
+import com.tm.environmenttm.constant.ConstantURL;
+import com.tm.environmenttm.constant.ConstantValue;
+import com.tm.environmenttm.controller.IRESTfull;
+import com.tm.environmenttm.controller.RetrofitClient;
+import com.tm.environmenttm.model.ChartThingspeak;
+import com.tm.environmenttm.model.Device;
+import com.tm.environmenttm.model.RealmTM;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ThingspeakFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ThingspeakFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ThingspeakFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+    private Device device;
+    private List<ChartThingspeak> dataModels;
+    private ListView listView;
+    private CustomListThingspeakAdapter adapter;
 
     public ThingspeakFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ThingspeakFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ThingspeakFragment newInstance(String param1, String param2) {
-        ThingspeakFragment fragment = new ThingspeakFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_thingspeak, container, false);
-    }
+        ConstantFunction.changeTitleBar(getActivity(), ConstantValue.TITLE_THINGSPEAK);
+        setHasOptionsMenu(true);
+        View view = inflater.inflate(R.layout.fragment_thingspeak, container, false);
+        device = (Device) getArguments().getSerializable(ConstantValue.DEVICE);
+        listView = (ListView) view.findViewById(R.id.lvThingspeak);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        loadThingspeak(device.getId());
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Fragment fragment = new ThingspeakFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ConstantValue.DEVICE, device);
+                bundle.putBoolean("active",
+                        (device.isActive()));
+                fragment.setArguments(bundle);
+                ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, fragment, ConstantValue.FRG_THINGSPEAK);
+            }
+        });
+        return view;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_device, menu);
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_add_device) {
+            Fragment fragment = new AddDeivceFragment();
+            ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, fragment, ConstantValue.FRG_ADD_DEVICE);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private void loadThingspeak(String deviceId) {
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Call<List<ChartThingspeak>> call = iServices.getAllChartThingspeak(deviceId,"");
+        final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
+        call.enqueue(new Callback<List<ChartThingspeak>>() {
+            @Override
+            public void onResponse(Call<List<ChartThingspeak>> call, Response<List<ChartThingspeak>> response) {
+                if (response.code() == 200) {
+                    dataModels = response.body();
+                    adapter = new CustomListThingspeakAdapter(getContext(), dataModels);
+                    adapter.notifyDataSetChanged();
+                    listView.setAdapter(adapter);
+                } else {
+                    ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                }
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<List<ChartThingspeak>> call, Throwable t) {
+                ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                dialog.dismiss();
+            }
+        });
     }
 }

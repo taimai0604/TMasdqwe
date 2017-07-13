@@ -19,7 +19,6 @@ import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.Environment;
 import com.tm.environmenttm.model.RealmTM;
-import com.tm.environmenttm.notification.MyBroadcastReceiver;
 
 import java.util.Date;
 import java.util.List;

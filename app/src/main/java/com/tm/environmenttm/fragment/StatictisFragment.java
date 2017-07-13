@@ -77,7 +77,7 @@ public class StatictisFragment extends Fragment {
 
     private void loadWebView(String deviceId) {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
-        Call<List<ChartThingspeak>> call = iServices.getAllChartThingspeak(deviceId);
+        Call<List<ChartThingspeak>> call = iServices.getAllChartThingspeak(deviceId,"{\"where\":{\"active\":true}}");
         final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
         call.enqueue(new Callback<List<ChartThingspeak>>() {
             @Override

@@ -1,10 +1,13 @@
 package com.tm.environmenttm.fragment;
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.PubnubTM;
 import com.tm.environmenttm.model.RealmTM;
+import com.tm.environmenttm.notification.MyBroadcastReceiver;
 
 import java.util.Calendar;
 
@@ -33,14 +37,12 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
     private TextView tvNotificationTemp;
     private SwitchButton sbNotificationTemp;
 
-    private String TAG = this.getClass().getName();
     private ConfigApp configApp;
     private Realm realm;
 
     private Device device;
 
-
-    private Context context;
+    private final Context context;
 
     public SettingFragment(Context context) {
         this.context = context;

@@ -9,8 +9,11 @@
 
     <!-- noti, widget -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!--
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    -->
+    <!-- Permission to start Alarm on device reboot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
     <application
         android:name=".config.ConfigActivity"
         android:allowBackup="true"
@@ -25,6 +28,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
 
         <activity
             android:name=".Home"
@@ -44,7 +48,6 @@
         <receiver android:name=".simplewidget.SimpleWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.tm.environmenttm.simplewidget.CLOCK_UPDATE" />
             </intent-filter>
 
             <meta-data
@@ -53,13 +56,10 @@
         </receiver>
 
         <service android:name=".simplewidget.UpdateService" />
-        <service android:name=".Services.ServiceCallNotification" />
+        <service android:name=".Services.ServiceCallNotification"/>
 
         <!-- noti -->
-        <receiver android:name=".notification.MyBroadcastReceiver" />
-        <receiver
-            android:name=".notification.DeviceBootReceiver"
-            android:enabled="false">
+        <receiver android:name=".notification.MyBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -68,9 +68,8 @@
         <activity
             android:name=".SearchLocationActivity"
             android:theme="@style/SearchBar" />
-        <activity android:name=".pubnub.DemoPubnub">
+        <activity android:name=".pubnub.DemoPubnub"></activity>
 
-        </activity>
     </application>
 
 </manifest>

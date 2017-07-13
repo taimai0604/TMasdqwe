@@ -1,10 +1,12 @@
 package com.tm.environmenttm.model;
 
+import java.io.Serializable;
+
 /**
  * Created by taima on 06/27/2017.
  */
 
-public class ChartThingspeak {
+public class ChartThingspeak implements Serializable{
     private String id;
     private String name;
     private String content;

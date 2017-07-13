@@ -33,8 +33,9 @@ import java.util.Arrays;
 public class PubnubTM {
     public static PubnubTM INSTANT = new PubnubTM();
     private CustomCallbackPubnub customCallbackPubnub;
-    private PubnubTM() {
 
+    private PubnubTM() {
+        customCallbackPubnub = null;
     }
 
     private PNConfiguration pnConfiguration = new PNConfiguration();
@@ -50,6 +51,9 @@ public class PubnubTM {
     }
 
     public void subChannel(Context context, Device device, String... channels) {
+        if(pubnub == null){
+            initPubnub(context, device);
+        }
         pubnub.addListener(customCallbackPubnub);
         pubnub.subscribe().channels(Arrays.asList(channels)).execute();
     }

@@ -1,16 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/listViewItem"
+    android:layout_width="match_parent"
+    android:background="@android:drawable/list_selector_background">
+
+    <View
+        android:id="@+id/ngangitem_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/lvDividerHeight"
+        android:layout_alignParentBottom="true"
+        android:background="@color/lvDividerColor" />
+
+    <ImageView
+        android:id="@+id/imgDeleteDevice"
+        style="@style/listViewItemButtonStyle"
+        android:layout_height="56dp"
+        android:layout_width="56dp"
+        android:padding="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:background="@android:drawable/list_selector_background"
+        android:clickable="true"
+        android:src="@mipmap/ic_remove" />
+    <View
+        android:id="@+id/duongdocvertical_divider"
+        style="@style/listViewVerticalDivider"
+        android:layout_height="fill_parent"
+        android:layout_toLeftOf="@id/imgDeleteDevice" />
+
+    <ToggleButton
+        android:id="@+id/chkState"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_toLeftOf="@id/duongdocvertical_divider"
+        android:background="@drawable/toggle_selector_oval"
+        android:checked="false"
+        android:padding="6dp"
+        android:textOff=""
+        android:textOn="" />
 
     <TextView
-        android:id="@+id/tvLocation"
-        android:layout_width="match_parent"
+        android:id="@+id/edNameDevice"
+        style="@style/listViewPrimaryDetail"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#555555"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:paddingLeft="10dp"
-        android:textSize="18sp"
-        android:text="@string/default_text_view" />
-</LinearLayout>
+        android:ellipsize="marquee"
+        android:text="Name Device"
+        android:textIsSelectable="false"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+
+</RelativeLayout>

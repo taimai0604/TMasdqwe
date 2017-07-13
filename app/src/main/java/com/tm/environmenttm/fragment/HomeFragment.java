@@ -444,29 +444,30 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_refersh:
-                ConstantFunction.replaceFragmentNotBackStack(getFragmentManager(), R.id.frgContent, new HomeFragment(), ConstantValue.FRG_HOME);
-                break;
-            case R.id.action_search:
-                Intent intent = new Intent(getContext(), SearchLocationActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.action_real_time:
-                if (device == null) {
-                    ConstantFunction.showToast(getContext(), "no location");
-                } else {
+        if (device == null) {
+            ConstantFunction.showToast(getContext(), "no location");
+        } else {
+            int id = item.getItemId();
+            switch (id) {
+                case R.id.action_refersh:
+                    ConstantFunction.replaceFragmentNotBackStack(getFragmentManager(), R.id.frgContent, new HomeFragment(), ConstantValue.FRG_HOME);
+                    break;
+                case R.id.action_search:
+                    Intent intent = new Intent(getContext(), SearchLocationActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.action_real_time:
+
                     frgTag = ConstantValue.FRG_DEVICE_REAL_TIME;
                     frgContent = new StatictisFragment();
                     ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, frgContent, frgTag);
-                }
-                break;
-            case R.id.action_control:
-                frgTag = ConstantValue.FRG_DEVICE_CONTROLLER;
-                frgContent = new DeviceControllerFragment();
-                ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, frgContent, frgTag);
-                break;
+                    break;
+                case R.id.action_control:
+                    frgTag = ConstantValue.FRG_DEVICE_CONTROLLER;
+                    frgContent = new DeviceControllerFragment();
+                    ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, frgContent, frgTag);
+                    break;
+            }
         }
         return super.onOptionsItemSelected(item);
     }

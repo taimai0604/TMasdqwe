@@ -117,11 +117,8 @@ public class EditDeviceFragment extends Fragment {
             device.setDeviceId(edDeviceId.getText().toString());
             device.setKeyThingspeak(edKeyThingspeak.getText().toString());
 
-            // dua vao ten de thay doi thong so vi tri
-            //String address = "khu phố 6, Thủ Đức, Hồ Chí Minh, Việt Nam";
             String address = edLocation.getText().toString();
             String url = TestMapFragment.getUrl(address);
-            Log.d("getLocation", url.toString());
             FetchUrlGeo FetchUrl = new FetchUrlGeo();
             FetchUrl.execute(url);
 

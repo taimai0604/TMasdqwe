@@ -32,7 +32,6 @@ public class ServiceCallNotification extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         PubnubTM.INSTANT.subChannel(this, device, ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + device.getDeviceId());
-        Log.d(TAG, "onStartCommand: on");
         return START_STICKY;
     }
 
@@ -40,7 +39,6 @@ public class ServiceCallNotification extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onStartCommand: off");
         PubnubTM.INSTANT.unsubChannel(this, device, ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + device.getDeviceId());
     }
 }
