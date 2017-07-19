@@ -22,13 +22,13 @@ import com.tm.environmenttm.model.RealmTM;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SimpleWidgetProvider extends AppWidgetProvider {
-    //    public static String CLOCK_UPDATE = "com.tm.environmenttm.simplewidget.CLOCK_UPDATE";
     public static String UPDATE_PREFERENCES = "android.appwidget.action.APPWIDGET_UPDATE";
     private PendingIntent pendingIntent, pendingIntentNoti;
 
@@ -42,7 +42,7 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
             int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
             for (int appWidgetID : ids) {
                 updateClock(context, appWidgetManager, appWidgetID);
-                Log.i("UPDATE_PREFERENCES", appWidgetID + "==");
+                Log.i("UPDATE_PREFERENCES", "=" + appWidgetID);
             }
         }
     }
@@ -51,8 +51,9 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
         // Get a reference to our Remote View
         AppWidgetProviderInfo appInfo = appWidgetManager.getAppWidgetInfo(appWidgetId);
         RemoteViews views = new RemoteViews(context.getPackageName(), appInfo.initialLayout);
-
         appWidgetManager.updateAppWidget(appWidgetId, views);
+        Log.i("updateClock", "=");
+
     }
 
     @Override
@@ -71,26 +72,17 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                     0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             //set event on click
             remoteViews.setOnClickPendingIntent(R.id.temp, pendingIntent);
-            // load temp and humidity
-            loadTempAndHumidity(remoteViews, appWidgetManager, widgetId);
-
             //load date
             loadDate(remoteViews);
+            // load temp and humidity
+            loadTempAndHumidity(remoteViews, appWidgetManager, widgetId);
         }
 //        //B1: cap nhat thoi gian
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, UpdateService.class);
-
         pendingIntent = PendingIntent.getService(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, 1000,
+        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
                 1000, pendingIntent);
-//        //B2: TEST NOTI
-//        final AlarmManager managerNoti = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//        final Intent iNoti = new Intent(context, MyBroadcastReceiver.class);
-//        pendingIntentNoti = PendingIntent.getBroadcast(context,
-//                0, iNoti, 0);
-//        managerNoti.setInexactRepeating(AlarmManager.RTC_WAKEUP, 1000, 1000, pendingIntentNoti);
     }
 
     private void loadDate(RemoteViews remoteViews) {
@@ -101,14 +93,12 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
         return DateFormat.format("MMMM dd, yyyy", new Date()).toString();
     }
 
-
     private void loadTempAndHumidity(final RemoteViews remoteViews, final AppWidgetManager appWidgetManager, final int widgetId) {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
         String query = "{ \"order\": \"datedCreated DESC\" ,  \"limit\": 1 }";
         Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
         if (device != null) {
             Call<List<Environment>> call = iServices.getInfoEnvironmentByDevice(device.getId(), query);
-
             call.enqueue(new Callback<List<Environment>>() {
 
                 @Override
@@ -117,6 +107,9 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                     if (response.code() == 200 && environment != null) {
                         Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
                         if (device != null) {
+//                            Random random = new Random();
+//                            int randomvalue = random.nextInt(1000);
+//                            remoteViews.setTextViewText(R.id.temp, "r" + String.valueOf(randomvalue));
                             remoteViews.setTextViewText(R.id.tvLocation, device.getLocation());
                             remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
                             remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
@@ -131,6 +124,7 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
 
                 }
             });
+        } else {
         }
     }
 }

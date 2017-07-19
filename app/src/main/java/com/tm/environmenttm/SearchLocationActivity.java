@@ -116,7 +116,7 @@ public class SearchLocationActivity extends AppCompatActivity {
     }
 
     public void drawUI(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(ConstantValue.TITLE_SEARCH_LOCATION);
         toolbar.setNavigationIcon(R.mipmap.ic_back);
         setSupportActionBar(toolbar);
@@ -136,6 +136,7 @@ public class SearchLocationActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 ConstantFunction.showToast(getApplicationContext(),query);
+                toolbar.setTitle(query);
                 loadDevices(query);
                 return false;
             }

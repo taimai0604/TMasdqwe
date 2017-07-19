@@ -60,7 +60,6 @@
                 android:layout_toEndOf="@id/ivContactItem4"
                 android:ellipsize="end"
                 android:minLines="2"
-                android:maxLines="5"
                 android:text="@string/default_text_view"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />

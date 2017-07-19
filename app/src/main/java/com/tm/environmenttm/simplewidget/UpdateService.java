@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.tm.environmenttm.R;
@@ -24,6 +25,7 @@ import com.tm.environmenttm.model.RealmTM;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,7 +43,6 @@ public class UpdateService extends Service {
         String today = getCurrentDate();
         RemoteViews view = new RemoteViews(getPackageName(), R.layout.widget_layout);
         view.setTextViewText(R.id.weather, today);
-
 
         ComponentName theWidget = new ComponentName(this, SimpleWidgetProvider.class);
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
@@ -61,7 +62,6 @@ public class UpdateService extends Service {
         Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
         if (device != null) {
             Call<List<Environment>> call = iServices.getInfoEnvironmentByDevice(device.getId(), query);
-
             call.enqueue(new Callback<List<Environment>>() {
 
                 @Override
@@ -71,7 +71,8 @@ public class UpdateService extends Service {
                         Device device = (Device) RealmTM.INSTANT.findFirst(Device.class);
                         if (device != null) {
 //                            Random random = new Random();
-//                            remoteViews.setTextViewText(R.id.temp, String.valueOf(random.nextInt(1000)));
+//                            int randomvalue = random.nextInt(1000);
+//                            remoteViews.setTextViewText(R.id.temp, "r" + String.valueOf(randomvalue));
                             remoteViews.setTextViewText(R.id.tvLocation, device.getLocation());
                             remoteViews.setTextViewText(R.id.temp, String.valueOf(environment.getTempC()));
                             remoteViews.setTextViewText(R.id.humidity, String.valueOf(environment.getHumidity()));
@@ -83,9 +84,9 @@ public class UpdateService extends Service {
 
                 @Override
                 public void onFailure(Call<List<Environment>> call, Throwable t) {
-
                 }
             });
+        } else {
         }
     }
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tm.environmenttm.Home;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.adapter.CustomListDeviceAdapter;
 import com.tm.environmenttm.adapter.CustomListLocationAdapter;
 import com.tm.environmenttm.adapter.CustomListThingspeakAdapter;
 import com.tm.environmenttm.constant.ConstantFunction;
@@ -32,6 +34,7 @@ import com.tm.environmenttm.model.RealmTM;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -42,6 +45,7 @@ public class ThingspeakFragment extends Fragment {
     private Device device;
     private List<ChartThingspeak> dataModels;
     private ListView listView;
+    private SwipeRefreshLayout srlDevices;
     private CustomListThingspeakAdapter adapter;
 
     public ThingspeakFragment() {
@@ -61,6 +65,7 @@ public class ThingspeakFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_thingspeak, container, false);
         device = (Device) getArguments().getSerializable(ConstantValue.DEVICE);
         listView = (ListView) view.findViewById(R.id.lvThingspeak);
+        srlDevices = (SwipeRefreshLayout) view.findViewById(R.id.srlDevices);
 
         loadThingspeak(device.getId());
 
@@ -74,6 +79,34 @@ public class ThingspeakFragment extends Fragment {
                         (device.isActive()));
                 fragment.setArguments(bundle);
                 ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, fragment, ConstantValue.FRG_THINGSPEAK);
+            }
+        });
+
+
+        srlDevices.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+                Call<List<ChartThingspeak>> call = iServices.getAllChartThingspeak(device.getId(),"");
+                call.enqueue(new Callback<List<ChartThingspeak>>() {
+                    @Override
+                    public void onResponse(Call<List<ChartThingspeak>> call, Response<List<ChartThingspeak>> response) {
+                        if (response.code() == 200) {
+                            dataModels = response.body();
+                            adapter = new CustomListThingspeakAdapter(getContext(), dataModels);
+                            adapter.notifyDataSetChanged();
+                            listView.setAdapter(adapter);
+                            srlDevices.setRefreshing(false);
+                        } else {
+                            ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ChartThingspeak>> call, Throwable t) {
+                        ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
+                    }
+                });
             }
         });
         return view;
@@ -90,8 +123,8 @@ public class ThingspeakFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_add_device) {
-            Fragment fragment = new AddDeivceFragment();
-            ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, fragment, ConstantValue.FRG_ADD_DEVICE);
+            Fragment fragment = new AddThingspeakFragment(device);
+            ConstantFunction.replaceFragmentHasBackStack(getFragmentManager(), R.id.frgContent, fragment, ConstantValue.FRG_ADD_THINGSPEAK);
         }
 
         return super.onOptionsItemSelected(item);
@@ -109,6 +142,7 @@ public class ThingspeakFragment extends Fragment {
                     adapter = new CustomListThingspeakAdapter(getContext(), dataModels);
                     adapter.notifyDataSetChanged();
                     listView.setAdapter(adapter);
+                    srlDevices.setRefreshing(false);
                 } else {
                     ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
                 }

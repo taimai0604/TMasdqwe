@@ -108,6 +108,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     ConstantFunction.settingDefault();
 
                     Intent intent = new Intent(getContext(),Home.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 } else {
                     ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));

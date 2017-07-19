@@ -14,7 +14,10 @@ public class ConstantURL {
 
     //device
     public static final String GET_ALL_DEVICE = "/api/Devices";
+    public static final String ADD_DEVICE = "/api/Devices/addDevice";
+    public static final String GET_DEVICE_BY_ID = "/api/Devices/{id}";
     public static final String EDIT_DEVICE = "/api/Devices/{id}/editDevice";
+    public static final String DELETE_DEVICE = "/api/Devices/removeDevice";
     public static final String LED_CONTROL = "/api/Devices/controllerLed";
     public static final String IS_LED = "/api/Devices/isLed";
     public static final String GET_TIME_DELAY = "/api/Devices/getTimeDelay";
@@ -38,6 +41,7 @@ public class ConstantURL {
 
     //chart thingspeak
     public static final String GET_ALL_CHART_BY_DEVICE_ID = "/api/Devices/{id}/chartThingspeaks";
+    public static final String ADD_THINGSPEAK = "/api/chartThingspeaks";
     public static final String EDIT_CHART = "/api/chartThingspeaks/{id}";
     public static final String DELETE_CHART = "/api/chartThingspeaks/{id}";
 

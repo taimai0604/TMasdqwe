@@ -17,6 +17,7 @@ import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
+import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.RealmTM;
 import com.tm.environmenttm.model.ResponeBoolean;
@@ -37,6 +38,7 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
     private TextView tvValueHeightTemp;
     private TextView tvTitleHeightTemp;
     private Device device;
+    private Account account;
 
 
     public DeviceControllerFragment() {
@@ -49,6 +51,8 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
         ConstantFunction.changeTitleBar(getActivity(), ConstantValue.TITLE_DEVICE_CONTROL);
         View view = inflater.inflate(R.layout.fragment_device_controller, container, false);
         device = (Device) RealmTM.INSTANT.findFirst(Device.class);
+        account = (Account) RealmTM.INSTANT.findFirst(Account.class);
+
         sbLedControl = (SwitchButton) view.findViewById(R.id.sbLedControl);
         tvLedControl = (TextView) view.findViewById(R.id.tvNotificationTemp);
         tvValueTimeDelay = (TextView) view.findViewById(R.id.tvValueTimeDelay);
@@ -61,8 +65,12 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
         tvTitleHeightTemp = (TextView) view.findViewById(R.id.tvTitleHeightTemp);
 
         loadStatusLed();
-
-        loadTimeDelay();
+        if(account.isRule() == true){
+            loadTimeDelay();
+        }else{
+            tvTitleTimeDelay.setVisibility(View.INVISIBLE);
+            tvValueTimeDelay.setVisibility(View.INVISIBLE);
+        }
 
         loadLowTemp();
 

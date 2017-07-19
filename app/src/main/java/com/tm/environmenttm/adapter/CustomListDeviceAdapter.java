@@ -28,6 +28,7 @@ import com.tm.environmenttm.fragment.InfoDeviceFragment;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.ResponeBoolean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -59,13 +60,34 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                data.remove(position);
-                                notifyDataSetChanged();
+                                deleteDevice(dataModel.getDeviceId(), position);
                             }
                         })
                         .show();
                 break;
         }
+    }
+
+    private void deleteDevice(String deviceId, final int position) {
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Call<ResponeBoolean> call = iServices.deleteDevice(deviceId);
+        // show it
+        call.enqueue(new Callback<ResponeBoolean>() {
+            @Override
+            public void onResponse(Call<ResponeBoolean> call, Response<ResponeBoolean> response) {
+                if (response.body().isResult()) {
+                    data.remove(position);
+                    notifyDataSetChanged();
+                } else {
+                    ConstantFunction.showToast(getContext(), "error");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponeBoolean> call, Throwable t) {
+                ConstantFunction.showToast(getContext(), "error");
+            }
+        });
     }
 
     // View lookup cache

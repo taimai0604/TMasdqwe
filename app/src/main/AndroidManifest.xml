@@ -56,7 +56,6 @@
         </receiver>
 
         <service android:name=".simplewidget.UpdateService" />
-        <service android:name=".Services.ServiceCallNotification"/>
 
         <!-- noti -->
         <receiver android:name=".notification.MyBroadcastReceiver">
@@ -64,6 +63,9 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <!--Service-->
+        <service android:name=".Services.ServiceCallNotification"/>
 
         <activity
             android:name=".SearchLocationActivity"

@@ -3,7 +3,6 @@ package com.tm.environmenttm.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +18,6 @@ import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
-import com.tm.environmenttm.map.TestMapFragment;
 import com.tm.environmenttm.model.ChartThingspeak;
 
 import retrofit2.Call;

@@ -15,6 +15,7 @@ public class ConstantValue {
     public static final String FRG_SETTING = "settting";
     public static final String FRG_THINGSPEAK = "thingspeak";
     public static final String FRG_EDIT_THINGSPEAK = "edit_thingspeak";
+    public static final String FRG_ADD_THINGSPEAK= "add_thingspeak";
 
     public static final String TITLE_SEARCH_LOCATION = "Location";
     public static final String TITLE_REAL_TIME = "Real time";

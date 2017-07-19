@@ -34,19 +34,30 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.pubnub.api.PubNub;
 import com.tm.environmenttm.CustomModel.CustomCallbackPubnub;
+import com.tm.environmenttm.adapter.CustomListLocationAdapter;
 import com.tm.environmenttm.config.ConfigApp;
 import com.tm.environmenttm.constant.ConstantFunction;
+import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.constant.ConstantValue;
+import com.tm.environmenttm.controller.IRESTfull;
+import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.fragment.DeviceFragment;
 import com.tm.environmenttm.fragment.HomeFragment;
 import com.tm.environmenttm.fragment.SettingFragment;
 import com.tm.environmenttm.map.TestMapFragment;
 import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.Device;
+import com.tm.environmenttm.model.Environment;
 import com.tm.environmenttm.model.PubnubTM;
 import com.tm.environmenttm.model.RealmTM;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.Realm;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LocationListener, GoogleApiClient.ConnectionCallbacks,
@@ -88,13 +99,19 @@ public class Home extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        //get account
+        account = (Account) RealmTM.INSTANT.findFirst(Account.class);
+        if(account.isRule() == false){
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_home_client_drawer);
+        }
+
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
         tvFullName = (TextView) header.findViewById(R.id.tvFullName);
         tvEmail = (TextView) header.findViewById(R.id.tvEmail);
 
-        //get account
-        account = (Account) RealmTM.INSTANT.findFirst(Account.class);
         device = (Device) RealmTM.INSTANT.findFirst(Device.class);
 
 
@@ -112,11 +129,30 @@ public class Home extends AppCompatActivity
 //            PubnubTM.INSTANT.subChannel(context, device, ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + device.getDeviceId());
         }
 
-        Log.d(TAG, "onCreate: " + fragmentManager.getBackStackEntryCount());
+        if(device != null){
+            checkErrorDevice();
+        }
         frgContent = new HomeFragment();
         addFragment(frgContent, ConstantValue.FRG_HOME);
         refresh = false;
+    }
 
+    private void checkErrorDevice() {
+        IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+        Call<Device> call = iServices.getDeviceById(device.getId());
+        // show it
+        call.enqueue(new Callback<Device>() {
+            @Override
+            public void onResponse(Call<Device> call, Response<Device> response) {
+                if(response.body() == null){
+                    RealmTM.INSTANT.deleteAll(Device.class);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Device> call, Throwable t) {
+            }
+        });
     }
 
     @Override

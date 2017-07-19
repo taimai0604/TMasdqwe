@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.tm.environmenttm.CustomModel.ResponeUserLogin;
 import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.constant.ConstantValue;
+import com.tm.environmenttm.fragment.ThingspeakFragment;
 import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.ChartThingspeak;
 import com.tm.environmenttm.model.Device;
@@ -39,10 +40,15 @@ public interface IRESTfull {
     @POST(ConstantURL.CHECK_LOGIN)
     Call<ResponeUserLogin> checkLogin(@Body Account account);
 
+    @POST(ConstantURL.ADD_DEVICE)
+    Call<ResponeBoolean> addDevice(@Body Device device);
     //list device
     @GET(ConstantURL.GET_ALL_DEVICE)
     Call<List<Device>> getAllDevice();
 
+    //device by id
+    @GET(ConstantURL.GET_DEVICE_BY_ID)
+    Call<Device> getDeviceById(@Path("id") String id);
     //get list device
     @GET(ConstantURL.GET_ALL_DEVICE)
     Call<List<Device>> getDeviceByLocation(@Query("filter") String location);
@@ -54,6 +60,8 @@ public interface IRESTfull {
     Call<ResponeBoolean> editDevice(@Body Device device, @Path("id") String id);
 
     //delete device
+    @POST(ConstantURL.DELETE_DEVICE)
+    Call<ResponeBoolean> deleteDevice(@Query("deviceId") String deviceId);
 
     //environment current
     @GET(ConstantURL.GET_INFO_ENVIRONMENT_CURRENT)
@@ -112,6 +120,10 @@ public interface IRESTfull {
     //get list chart thingspeak
     @GET(ConstantURL.GET_ALL_CHART_BY_DEVICE_ID)
     Call<List<ChartThingspeak>> getAllChartThingspeak(@Path("id") String id, @Query("filter") String filter);
+
+    //add chart thingspeak
+    @POST(ConstantURL.ADD_THINGSPEAK)
+    Call<ChartThingspeak> addChartThingspeak(@Body ChartThingspeak chartThingspeak);
 
     //edit chart thingspeak
     @PUT(ConstantURL.EDIT_CHART)
