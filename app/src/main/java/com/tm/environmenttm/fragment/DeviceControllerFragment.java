@@ -1,5 +1,6 @@
 package com.tm.environmenttm.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
@@ -7,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.config.ConfigApp;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.constant.ConstantValue;
@@ -37,8 +40,11 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
     private TextView tvTitleLowTemp;
     private TextView tvValueHeightTemp;
     private TextView tvTitleHeightTemp;
+
+    private RelativeLayout layoutTimeDelay;
+
     private Device device;
-    private Account account;
+    private ConfigApp configApp;
 
 
     public DeviceControllerFragment() {
@@ -51,26 +57,23 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
         ConstantFunction.changeTitleBar(getActivity(), ConstantValue.TITLE_DEVICE_CONTROL);
         View view = inflater.inflate(R.layout.fragment_device_controller, container, false);
         device = (Device) RealmTM.INSTANT.findFirst(Device.class);
-        account = (Account) RealmTM.INSTANT.findFirst(Account.class);
+        configApp = (ConfigApp) RealmTM.INSTANT.findFirst(ConfigApp.class);
 
         sbLedControl = (SwitchButton) view.findViewById(R.id.sbLedControl);
         tvLedControl = (TextView) view.findViewById(R.id.tvNotificationTemp);
         tvValueTimeDelay = (TextView) view.findViewById(R.id.tvValueTimeDelay);
         tvTitleTimeDelay = (TextView) view.findViewById(R.id.tvTitleTimeDelay);
 
-        tvValueLowTemp= (TextView) view.findViewById(R.id.tvValueLowTemp);
+        layoutTimeDelay = (RelativeLayout) view.findViewById(R.id.layoutTimeDelay);
+
+        tvValueLowTemp = (TextView) view.findViewById(R.id.tvValueLowTemp);
         tvTitleLowTemp = (TextView) view.findViewById(R.id.tvTitleLowTemp);
 
         tvValueHeightTemp = (TextView) view.findViewById(R.id.tvValueHeightTemp);
         tvTitleHeightTemp = (TextView) view.findViewById(R.id.tvTitleHeightTemp);
 
         loadStatusLed();
-        if(account.isRule() == true){
-            loadTimeDelay();
-        }else{
-            tvTitleTimeDelay.setVisibility(View.INVISIBLE);
-            tvValueTimeDelay.setVisibility(View.INVISIBLE);
-        }
+        loadTimeDelay();
 
         loadLowTemp();
 
@@ -95,7 +98,12 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
             @Override
             public void onResponse(Call<ResponeNumber> call, Response<ResponeNumber> response) {
                 if (response.code() == 200) {
-                    tvValueHeightTemp.setText(response.body().getResult() + "");
+                    ResponeNumber result = response.body();
+                    tvValueHeightTemp.setText(result.getResult() + "");
+
+                    RealmTM.INSTANT.realm.beginTransaction();
+                    configApp.setUpperTemp(result.getResult());
+                    RealmTM.INSTANT.realm.commitTransaction();
                 } else {
                     ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
                 }
@@ -119,7 +127,14 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
             @Override
             public void onResponse(Call<ResponeNumber> call, Response<ResponeNumber> response) {
                 if (response.code() == 200) {
-                    tvValueLowTemp.setText(response.body().getResult() + "");
+
+                    ResponeNumber result = response.body();
+                    tvValueLowTemp.setText(result.getResult() + "");
+
+                    //update
+                    RealmTM.INSTANT.realm.beginTransaction();
+                    configApp.setLowerTemp(result.getResult());
+                    RealmTM.INSTANT.realm.commitTransaction();
                 } else {
                     ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
                 }
@@ -285,7 +300,7 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
                                 setTimeDelay(Integer.valueOf(input.toString()));
                             }
 
-                            private void setTimeDelay(int timeDelay) {
+                            private void setTimeDelay(final int timeDelay) {
                                 IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
                                 Call<ResponeBoolean> call = iServices.setLowTemp(device.getDeviceId(), timeDelay);
                                 final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
@@ -296,6 +311,10 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
                                             ResponeBoolean result = response.body();
                                             if (!result.isResult()) {
                                                 ConstantFunction.showToast(getContext(), "control fail");
+                                            } else {
+                                                RealmTM.INSTANT.realm.beginTransaction();
+                                                configApp.setLowerTemp(timeDelay);
+                                                RealmTM.INSTANT.realm.commitTransaction();
                                             }
                                         } else {
                                             ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
@@ -325,7 +344,7 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
                                 setTimeDelay(Integer.valueOf(input.toString()));
                             }
 
-                            private void setTimeDelay(int timeDelay) {
+                            private void setTimeDelay(final int timeDelay) {
                                 IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
                                 Call<ResponeBoolean> call = iServices.setHeightTemp(device.getDeviceId(), timeDelay);
                                 final MaterialDialog dialog = ConstantFunction.showProgressHorizontalIndeterminateDialog(getContext());
@@ -336,6 +355,10 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
                                             ResponeBoolean result = response.body();
                                             if (!result.isResult()) {
                                                 ConstantFunction.showToast(getContext(), "control fail");
+                                            } else {
+                                                RealmTM.INSTANT.realm.beginTransaction();
+                                                configApp.setUpperTemp(timeDelay);
+                                                RealmTM.INSTANT.realm.commitTransaction();
                                             }
                                         } else {
                                             ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
@@ -354,4 +377,6 @@ public class DeviceControllerFragment extends Fragment implements CompoundButton
                 break;
         }
     }
+
+
 }

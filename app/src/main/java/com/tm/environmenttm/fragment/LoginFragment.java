@@ -3,7 +3,6 @@ package com.tm.environmenttm.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
@@ -50,7 +49,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        if (ConstantFunction.isLogin()) {
+            changeActivityToHome();
+        }
         TextView textView = (TextView) view.findViewById(R.id.tvCreateAccount);
         SpannableString content = new SpannableString(getResources().getString(R.string.create_account));
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
@@ -67,11 +71,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         //set action button
         btnLogin.setOnClickListener(this);
         tvCreateAccount.setOnClickListener(this);
-
-        if (ConstantFunction.isLogin()) {
-            Intent intent = new Intent(getContext(), Home.class);
-            startActivity(intent);
-        }
 
         return view;
     }
@@ -107,9 +106,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     // init setting defaut
                     ConstantFunction.settingDefault();
 
-                    Intent intent = new Intent(getContext(),Home.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    changeActivityToHome();
                 } else {
                     ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
                 }
@@ -122,4 +119,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+
+    public void changeActivityToHome() {
+        Intent intent = new Intent(getContext(), Home.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 }

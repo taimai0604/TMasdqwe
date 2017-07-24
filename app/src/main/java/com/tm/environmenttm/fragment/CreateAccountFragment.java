@@ -56,7 +56,7 @@ public class CreateAccountFragment extends Fragment {
 
                 Account account = null;
 
-                if(checkFormatEmail(email) && !fullName.isEmpty()){
+                if(ConstantFunction.checkFormatEmail(email) && !fullName.isEmpty()){
                     if(password.equals(rePassword)){
                         Log.d(TAG, "onClick: " + fullName);
                         account = new Account();
@@ -93,8 +93,5 @@ public class CreateAccountFragment extends Fragment {
                 ConstantFunction.showToast(getContext(), getResources().getString(R.string.login_fail));
             }
         });
-    }
-    public boolean checkFormatEmail(String email){
-        return true;
     }
 }

@@ -1,9 +1,10 @@
 package com.tm.environmenttm.model;
 
+import com.tm.environmenttm.config.ConfigApp;
+
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmModel;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 
@@ -13,7 +14,7 @@ import io.realm.RealmResults;
 
 public class RealmTM {
     public static RealmTM INSTANT = new RealmTM();
-    private Realm realm;
+    public Realm realm;
 
     private RealmTM() {
         this.realm = Realm.getDefaultInstance();
@@ -22,6 +23,12 @@ public class RealmTM {
     public void addRealm(RealmObject object) {
         realm.beginTransaction();
         realm.copyToRealm(object);
+        realm.commitTransaction();
+    }
+
+    public void updateRealm(RealmObject object){
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(object);
         realm.commitTransaction();
     }
 
@@ -51,59 +58,9 @@ public class RealmTM {
         results.deleteAllFromRealm();
         realm.commitTransaction();
     }
-//    public void addAccountRealm(Account account) {
-//        realm.beginTransaction();
-//        realm.copyToRealm(account);
-//        realm.commitTransaction();
-//    }
-//
-//    public Account findOneAccountRealm() {
-//        realm.beginTransaction();
-//        Account account = realm.where(Account.class).findFirst();
-//        realm.commitTransaction();
-//        return account;
-//    }
-//
     public void logout() {
-        realm.beginTransaction();
-        RealmResults<Account> results = realm.where(Account.class).findAll();
-        results.deleteFirstFromRealm();
-        realm.commitTransaction();
+        deleteAll(Account.class);
+        deleteAll(Device.class);
+        deleteAll(ConfigApp.class);
     }
-//
-//    public Device findOneDeviceRealm() {
-//        realm.beginTransaction();
-//        Device result = realm.where(Device.class).findFirst();
-//        realm.commitTransaction();
-//        return result;
-//    }
-//
-//    public void deleteDeviceAll(){
-//        realm.beginTransaction();
-//        RealmResults<Device> results = realm.where(Device.class).findAll();
-//        results.deleteAllFromRealm();
-//        realm.commitTransaction();
-//    }
-//
-//    //    type
-//    public List<Type> findTypeDevice() {
-//        realm.beginTransaction();
-//        List<Type> result = realm.where(Type.class)
-//                .findAll();
-//        realm.commitTransaction();
-//        return result;
-//    }
-//
-//    public void addTypeDevice(List<Type> list){
-//        realm.beginTransaction();
-//        realm.copyToRealm(list);
-//        realm.commitTransaction();
-//    }
-//
-//    public void deleteTypeDeviceAll(){
-//        realm.beginTransaction();
-//        RealmResults<Type> results = realm.where(Type.class).findAll();
-//        results.deleteAllFromRealm();
-//        realm.commitTransaction();
-//    }
 }

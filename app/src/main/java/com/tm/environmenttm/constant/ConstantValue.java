@@ -6,6 +6,7 @@ package com.tm.environmenttm.constant;
 
 public class ConstantValue {
     public static final String FRG_HOME = "home";
+    public static final String FRG_PROFILE = "profile";
     public static final String FRG_INFO_DEVICE= "show_info_device";
     public static final String FRG_ADD_DEVICE= "add_device";
     public static final String FRG_DEVICE_CONTROLLER = "device_controller";
@@ -38,5 +39,8 @@ public class ConstantValue {
     public static final String THINGSPEAK = "thingspeak";
     public static final String ACTIVE = "active";
 
+    public static final float UPPER_TEMP = 40;
+    public static final float LOWER_TEMP = 20;
+    public static final String RESQUEST_FAIL = "Request failt";
 
 }

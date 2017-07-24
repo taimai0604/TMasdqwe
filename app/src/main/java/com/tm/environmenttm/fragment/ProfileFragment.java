@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import com.tm.environmenttm.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ProfileFragment extends Fragment {
 
 

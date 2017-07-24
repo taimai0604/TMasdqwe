@@ -5,32 +5,39 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <ScrollView
-        android:id="@+id/svHome"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srlHome"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/svHome"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-
-            <include layout="@layout/table_info_environment" />
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chartLineTemperature"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="10dp" />
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                android:orientation="vertical">
 
-            <ListView
-                android:id="@+id/lvChart"
-                android:layout_width="match_parent"
-                android:layout_height="500dp"></ListView>
-        </LinearLayout>
-    </ScrollView>
+
+                <include layout="@layout/table_info_environment" />
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chartLineTemperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="10dp" />
+
+                <ListView
+                    android:id="@+id/lvChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"></ListView>
+            </LinearLayout>
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

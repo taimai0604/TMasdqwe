@@ -10,6 +10,7 @@ public class ConstantURL {
 
     //account
     public static final String CREATE_ACCOUNT = "api/Accounts";
+    public static final String EDIT_ACCOUNT = "api/Accounts/{id}";
     public static final String CHECK_LOGIN = "/api/Accounts/login?include=user";
 
     //device

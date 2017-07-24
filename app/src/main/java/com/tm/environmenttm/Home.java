@@ -1,6 +1,7 @@
 package com.tm.environmenttm;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -32,9 +34,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.pubnub.api.PubNub;
-import com.tm.environmenttm.CustomModel.CustomCallbackPubnub;
-import com.tm.environmenttm.adapter.CustomListLocationAdapter;
 import com.tm.environmenttm.config.ConfigApp;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
@@ -47,12 +46,8 @@ import com.tm.environmenttm.fragment.SettingFragment;
 import com.tm.environmenttm.map.TestMapFragment;
 import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.Device;
-import com.tm.environmenttm.model.Environment;
 import com.tm.environmenttm.model.PubnubTM;
 import com.tm.environmenttm.model.RealmTM;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.realm.Realm;
 import retrofit2.Call;
@@ -61,7 +56,7 @@ import retrofit2.Response;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LocationListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private String TAG = this.getClass().getName();
 
     public Realm realm;
@@ -74,6 +69,7 @@ public class Home extends AppCompatActivity
 
     private TextView tvFullName;
     private TextView tvEmail;
+    private ImageView imgAvatar;
 
     private Context context = this;
 
@@ -110,13 +106,19 @@ public class Home extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
         tvFullName = (TextView) header.findViewById(R.id.tvFullName);
+
         tvEmail = (TextView) header.findViewById(R.id.tvEmail);
+        imgAvatar = (ImageView) header.findViewById(R.id.imgAvatar);
 
         device = (Device) RealmTM.INSTANT.findFirst(Device.class);
 
 
         tvFullName.setText(account.getFullName());
         tvEmail.setText(account.getEmail());
+
+        tvFullName.setOnClickListener(this);
+        tvEmail.setOnClickListener(this);
+        imgAvatar.setOnClickListener(this);
 
         // manager fragment
         fragmentManager = getSupportFragmentManager();
@@ -366,4 +368,15 @@ public class Home extends AppCompatActivity
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.tvFullName:
+            case R.id.imgAvatar:
+            case R.id.tvEmail:
+                Intent intent = new Intent(this, PersonalActivity.class);
+                startActivity(intent);
+                break;
+        }
+    }
 }

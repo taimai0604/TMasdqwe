@@ -3,4 +3,29 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <EditText
+        style="@style/editAccount"
+        android:id="@+id/edFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="@string/full_name" />
+
+    <EditText
+        style="@style/editAccount"
+        android:id="@+id/edEmail"
+        android:inputType="textEmailAddress"
+        android:hint="@string/email" />
+
+    <EditText
+        style="@style/editAccount"
+        android:id="@+id/edPassword"
+        android:inputType="textPassword"
+        android:hint="@string/password" />
+    <EditText
+        style="@style/editAccount"
+        android:id="@+id/edRePassword"
+        android:inputType="textPassword"
+        android:hint="@string/re_password" />
 </LinearLayout>

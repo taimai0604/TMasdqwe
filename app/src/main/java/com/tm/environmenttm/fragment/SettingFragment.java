@@ -84,6 +84,7 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
         sbNotificationTemp.setChecked(configApp.isNotificationTemp());
 
         sbNotificationTemp.setOnCheckedChangeListener(this);
+
         //noti
         sbNotification = (SwitchButton) rootView.findViewById(R.id.sbNotification);
         sbNotification.setChecked(configApp.isNotification());

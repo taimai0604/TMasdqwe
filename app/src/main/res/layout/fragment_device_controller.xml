@@ -49,31 +49,6 @@
                     android:padding="16dp" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#ffffff"
-                android:elevation="1dp"
-                android:outlineProvider="bounds">
-
-                <TextView
-                    android:id="@+id/tvTitleTimeDelay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/time_delay" />
-
-                <TextView
-                    android:id="@+id/tvValueTimeDelay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvTitleTimeDelay"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/default_text_view"
-                    android:textColor="#cccccc" />
-            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -100,6 +75,7 @@
                     android:text="@string/default_text_view"
                     android:textColor="#cccccc" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
@@ -120,6 +96,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvTitleHeightTemp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/default_text_view"
+                    android:textColor="#cccccc" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layoutTimeDelay"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="#ffffff"
+                android:elevation="1dp"
+                android:outlineProvider="bounds">
+
+                <TextView
+                    android:id="@+id/tvTitleTimeDelay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/time_delay" />
+
+                <TextView
+                    android:id="@+id/tvValueTimeDelay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvTitleTimeDelay"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="4dp"
                     android:text="@string/default_text_view"

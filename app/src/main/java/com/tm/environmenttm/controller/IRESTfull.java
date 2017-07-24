@@ -36,6 +36,10 @@ public interface IRESTfull {
     @POST(ConstantURL.CREATE_ACCOUNT)
     Call<Account> createAccount(@Body Account account);
 
+    //edit account
+    @PUT(ConstantURL.EDIT_ACCOUNT)
+    Call<Account> editAccount(@Path("id") String id, @Body Account account);
+
     //check login
     @POST(ConstantURL.CHECK_LOGIN)
     Call<ResponeUserLogin> checkLogin(@Body Account account);

@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,7 +37,6 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Utils;
 import com.google.gson.Gson;
 import com.tm.environmenttm.R;
@@ -44,11 +44,13 @@ import com.tm.environmenttm.SearchLocationActivity;
 import com.tm.environmenttm.chart.ChartItem;
 import com.tm.environmenttm.chart.LineChartItem;
 import com.tm.environmenttm.chart.MyMarkerView;
+import com.tm.environmenttm.config.ConfigApp;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
+import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.Environment;
 import com.tm.environmenttm.model.EnvironmentCurrent;
@@ -70,6 +72,8 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
     private TextView tvDewPoint;
     private ListView lvChart;
 
+    private SwipeRefreshLayout srlHome;
+
     private LineChart mChart;
 
     private ScrollView svHome;
@@ -81,6 +85,8 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
     private Device device;
 
+    private ConfigApp configApp;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -91,6 +97,9 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         // Inflate the layout for this fragment
         View view;
         device = findDeviceSaveRealm();
+
+        configApp = (ConfigApp) RealmTM.INSTANT.findFirst(ConfigApp.class);
+
         setHasOptionsMenu(true);
         if (device == null) {
             view = inflater.inflate(R.layout.fragment_non_device, container, false);
@@ -98,6 +107,8 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         } else {
             view = inflater.inflate(R.layout.fragment_home, container, false);
             ConstantFunction.changeTitleBar(getActivity(), device.getLocation());
+
+            //menu
 
             tvTemperature = (TextView) view.findViewById(R.id.tvTemperature);
             tvHumidity = (TextView) view.findViewById(R.id.tvHumidity);
@@ -108,81 +119,95 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
             lvChart = (ListView) view.findViewById(R.id.lvChart);
 
+            srlHome = (SwipeRefreshLayout) view.findViewById(R.id.srlHome);
             svHome = (ScrollView) view.findViewById(R.id.svHome);
 
             deviceId = device.getDeviceId();
             loadEnvironmentDevice(deviceId);
 
-
             //line chart
             mChart = (LineChart) view.findViewById(R.id.chartLineTemperature);
-            mChart.setOnChartGestureListener(this);
-            mChart.setOnChartValueSelectedListener(this);
-            mChart.setDrawGridBackground(false);
 
-            // no description text
-            mChart.getDescription().setEnabled(false);
-
-            // enable touch gestures
-            mChart.setTouchEnabled(true);
-
-            // enable scaling and dragging
-            mChart.setDragEnabled(true);
-            mChart.setScaleEnabled(true);
-            // mChart.setScaleXEnabled(true);
-            // mChart.setScaleYEnabled(true);
-
-            // if disabled, scaling can be done on x- and y-axis separately
-            mChart.setPinchZoom(true);
-
-            MyMarkerView mv = new MyMarkerView(getContext(), R.layout.custom_marker_view);
-            mv.setChartView(mChart); // For bounds control
-            mChart.setMarker(mv); // Set the marker to the chart
-
-            // x-axis limit line
-            LimitLine llXAxis = new LimitLine(10f, "Index 10");
-            llXAxis.setLineWidth(4f);
-            llXAxis.enableDashedLine(10f, 10f, 0f);
-            llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-            llXAxis.setTextSize(10f);
-
-            XAxis xAxis = mChart.getXAxis();
-            xAxis.enableGridDashedLine(10f, 10f, 0f);
-
-            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
-
-            LimitLine ll1 = new LimitLine(40f, "Upper Limit");
-            ll1.setLineWidth(4f);
-            ll1.enableDashedLine(10f, 10f, 0f);
-            ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-            ll1.setTextSize(10f);
-            ll1.setTypeface(tf);
-
-            LimitLine ll2 = new LimitLine(10f, "Lower Limit");
-            ll2.setLineWidth(4f);
-            ll2.enableDashedLine(10f, 10f, 0f);
-            ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
-            ll2.setTextSize(10f);
-            ll2.setTypeface(tf);
-
-            YAxis leftAxis = mChart.getAxisLeft();
-            leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
-            leftAxis.addLimitLine(ll1);
-            leftAxis.addLimitLine(ll2);
-            leftAxis.setAxisMaximum(50f);
-            leftAxis.setAxisMinimum(-10f);
-            //leftAxis.setYOffset(20f);
-            leftAxis.enableGridDashedLine(10f, 10f, 0f);
-            leftAxis.setDrawZeroLine(false);
-
-            // limit lines are drawn behind data (and not on top)
-            leftAxis.setDrawLimitLinesBehindData(true);
-
-            mChart.getAxisRight().setEnabled(false);
+            loadLineChartTemp();
 
             loadLineChartEnviroment(inflater, container);
+
+            srlHome.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    ConstantFunction.replaceFragmentNotBackStack(getFragmentManager(),R.id.frgContent, new HomeFragment(), ConstantValue.FRG_HOME);
+                }
+            });
         }
         return view;
+    }
+
+    private void loadLineChartTemp() {
+        mChart.setOnChartGestureListener(this);
+        mChart.setOnChartValueSelectedListener(this);
+        mChart.setDrawGridBackground(false);
+
+        // no description text
+        mChart.getDescription().setEnabled(false);
+
+        // enable touch gestures
+        mChart.setTouchEnabled(true);
+
+        // enable scaling and dragging
+        mChart.setDragEnabled(true);
+        mChart.setScaleEnabled(true);
+        // mChart.setScaleXEnabled(true);
+        // mChart.setScaleYEnabled(true);
+
+        // if disabled, scaling can be done on x- and y-axis separately
+        mChart.setPinchZoom(true);
+
+        MyMarkerView mv = new MyMarkerView(getContext(), R.layout.custom_marker_view);
+        mv.setChartView(mChart); // For bounds control
+        mChart.setMarker(mv); // Set the marker to the chart
+
+        // x-axis limit line
+        LimitLine llXAxis = new LimitLine(10f, "Index 10");
+        llXAxis.setLineWidth(4f);
+        llXAxis.enableDashedLine(10f, 10f, 0f);
+        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        llXAxis.setTextSize(10f);
+
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.enableGridDashedLine(10f, 10f, 0f);
+
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+
+        // upper
+        LimitLine ll1 = new LimitLine(configApp.getUpperTemp(), "Upper Limit");
+        ll1.setLineWidth(4f);
+        ll1.enableDashedLine(10f, 10f, 0f);
+        ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        ll1.setTextSize(10f);
+        ll1.setTypeface(tf);
+
+        // lower
+        LimitLine ll2 = new LimitLine(configApp.getLowerTemp(), "Lower Limit");
+        ll2.setLineWidth(4f);
+        ll2.enableDashedLine(10f, 10f, 0f);
+        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        ll2.setTextSize(10f);
+        ll2.setTypeface(tf);
+
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+        leftAxis.addLimitLine(ll1);
+        leftAxis.addLimitLine(ll2);
+        leftAxis.setAxisMaximum(50f);
+        leftAxis.setAxisMinimum(-10f);
+        //leftAxis.setYOffset(20f);
+        leftAxis.enableGridDashedLine(10f, 10f, 0f);
+        leftAxis.setDrawZeroLine(false);
+
+        // limit lines are drawn behind data (and not on top)
+        leftAxis.setDrawLimitLinesBehindData(true);
+
+        mChart.getAxisRight().setEnabled(false);
     }
 
     private void loadLineChartEnviroment(final LayoutInflater inflater, final ViewGroup container) {
@@ -449,6 +474,13 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_home, menu);
+
+        MenuItem itemControl = menu.findItem(R.id.action_control);
+
+        Account account = (Account) RealmTM.INSTANT.findFirst(Account.class);
+        if(!account.isRule()){
+            itemControl.setVisible(false);
+        }
     }
 
     @Override
