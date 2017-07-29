@@ -9,6 +9,8 @@
         android:id="@+id/toplayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:orientation="horizontal"
         android:paddingBottom="5dip"
         android:paddingLeft="10dip"
@@ -16,12 +18,12 @@
         android:paddingTop="5dip">
 
         <ImageView
-            android:id="@+id/clientPic"
+            android:id="@+id/imgDeviceMap"
             android:layout_width="60dip"
             android:layout_height="60dip"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="8dip"
-            android:src="@mipmap/ic_smart_phone" />
+            android:src="@mipmap/ic_electron" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -54,7 +56,6 @@
             </LinearLayout>
 
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -85,24 +86,58 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toplayout"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="1">
 
-        <Button
-            android:id="@+id/btnOne"
-            android:layout_width="120dip"
-            android:layout_height="40dip"
-            android:background="@color/colorPrimary"
-            android:text="Show Env" />
+        <LinearLayout
+            android:id="@+id/llshowEnv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toplayout"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
+            <info.hoang8f.widget.FButton
+                android:id="@+id/btnOne"
+                android:layout_width="150dip"
+                android:layout_height="40dip"
+                android:layout_gravity="left|top"
+                android:text="Show Env"
+                android:textColor="@android:color/white"
+                app:buttonColor="@color/fbutton_color_wet_asphalt"
+                app:shadowEnabled="true" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btnTwo"
-            android:layout_width="150dip"
-            android:layout_height="40dip"
-            android:layout_marginLeft="10dip"
-            android:background="@color/colorPrimary"
-            android:text="Show Infomation" />
+        <LinearLayout
+            android:id="@+id/llshowEmpty"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/toplayout"
+            android:layout_toRightOf="@+id/imgDeviceMap"
+            android:layout_weight="0.16"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            /></LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toplayout"
+            android:orientation="horizontal">
+
+            <info.hoang8f.widget.FButton
+                android:id="@+id/btnTwo"
+                android:layout_width="150dip"
+                android:layout_height="40dip"
+                android:layout_gravity="left|top"
+                android:layout_marginLeft="5dip"
+                android:text="Show Infomation"
+                android:textColor="@android:color/white"
+                app:buttonColor="@color/fbutton_color_wet_asphalt"
+
+                app:shadowEnabled="true" />
+-->
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
 

@@ -30,8 +30,6 @@ import java.util.Calendar;
 import io.realm.Realm;
 
 public class SettingFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
-    Calendar c = Calendar.getInstance();
-
     private View rootView;
 
     private TextView tvNotificationTemp;

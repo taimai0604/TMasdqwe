@@ -2,12 +2,15 @@ package com.tm.environmenttm;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,6 +37,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.tm.environmenttm.Services.ServiceCallNotification;
 import com.tm.environmenttm.config.ConfigApp;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
@@ -48,6 +52,9 @@ import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.PubnubTM;
 import com.tm.environmenttm.model.RealmTM;
+import com.tm.environmenttm.notification.MyBroadcastReceiver;
+
+import java.util.concurrent.ExecutionException;
 
 import io.realm.Realm;
 import retrofit2.Call;
@@ -74,6 +81,8 @@ public class Home extends AppCompatActivity
     private Context context = this;
 
     public static boolean refresh = false;
+
+    private PendingIntent pendingIntent;
 
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
@@ -127,8 +136,6 @@ public class Home extends AppCompatActivity
         ConfigApp configApp = (ConfigApp) RealmTM.INSTANT.findFirst(ConfigApp.class);
         if (device != null && configApp.isNotificationTemp()) {
             PubnubTM.INSTANT.initPubnub(getApplicationContext(), device);
-//            PubnubTM.INSTANT.unsubChannel(context, device, ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + device.getDeviceId());
-//            PubnubTM.INSTANT.subChannel(context, device, ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + device.getDeviceId());
         }
 
         if(device != null){
@@ -190,9 +197,18 @@ public class Home extends AppCompatActivity
             frgContent = new SettingFragment(getApplicationContext());
             ConstantFunction.replaceFragment(fragmentManager, R.id.frgContent, frgContent, frgTag);
         } else if (id == R.id.nav_logout) {
+            // unsub pubnub
+            device = (Device) RealmTM.INSTANT.findFirst(Device.class);
+            if(device != null){
+                Device deviceTmp = new Device();
+                deviceTmp.setDeviceId(device.getDeviceId());
+                PubnubTM.INSTANT.unsubChannel(this, deviceTmp, ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + deviceTmp.getDeviceId());
+            }
+
             RealmTM.INSTANT.logout();
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(context, LoginActivity.class);
             startActivity(intent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

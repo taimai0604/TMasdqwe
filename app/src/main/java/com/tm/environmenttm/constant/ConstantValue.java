@@ -43,4 +43,7 @@ public class ConstantValue {
     public static final float LOWER_TEMP = 20;
     public static final String RESQUEST_FAIL = "Request failt";
 
+    public static final String PHOTON = "Photon";
+    public static final String ELECTRON = "Electron";
+
 }

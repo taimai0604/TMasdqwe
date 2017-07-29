@@ -1,18 +1,22 @@
 package com.tm.environmenttm;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.tm.environmenttm.adapter.CustomListLocationAdapter;
 import com.tm.environmenttm.config.ConfigApp;
@@ -23,9 +27,12 @@ import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.RealmTM;
+import com.tm.environmenttm.model.ResponeNumber;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +43,10 @@ public class SearchLocationActivity extends AppCompatActivity {
     private MaterialSearchView searchView;
     private List<Device> dataModels;
     private ListView listView;
+
+    private Context context = this;
+    private ConfigApp configApp;
+
 
     private CustomListLocationAdapter adapter;
 
@@ -56,17 +67,25 @@ public class SearchLocationActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Device device = dataModels.get(position);
                 //remove
                 RealmTM.INSTANT.deleteAll(Device.class);
                 //add new
                 RealmTM.INSTANT.addRealm(device);
 
-                ConstantFunction.loadHeightLowTemp(device);
+                configApp = (ConfigApp) RealmTM.INSTANT.findFirst(ConfigApp.class);
+
+                DemoAsyncTask asyncTask = new DemoAsyncTask();
+                asyncTask.execute(device);
                 try {
-                    Thread.sleep(5000);
+                    ConfigApp configAppRespone = asyncTask.get();
+                    RealmTM.INSTANT.realm.beginTransaction();
+                    configApp.setLowerTemp(configAppRespone.getUpperTemp());
+                    configApp.setUpperTemp(configAppRespone.getLowerTemp());
+                    RealmTM.INSTANT.realm.commitTransaction();
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
 
@@ -79,13 +98,38 @@ public class SearchLocationActivity extends AppCompatActivity {
         });
     }
 
+    class DemoAsyncTask extends AsyncTask<Device, Boolean, ConfigApp> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ConfigApp doInBackground(Device... params) {
+            ConfigApp result = new ConfigApp();
+            result.setLowerTemp(ConstantValue.LOWER_TEMP);
+            result.setLowerTemp(ConstantValue.UPPER_TEMP);
+            Device device = params[0];
+
+            try {
+                IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+                Call<ResponeNumber> call = iServices.getLowTemp(device.getDeviceId());
+                result.setLowerTemp(call.execute().body().getResult());
+                call = iServices.getHeightTemp(device.getDeviceId());
+                result.setUpperTemp(call.execute().body().getResult());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
 
 
     public void loadDevices(String nameLocation) {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
         Call<List<Device>> call = iServices.getDeviceByLocation("{\"where\":{\"location\":{\"like\":\"" + nameLocation + "\"},\"active\":true}}");
         dataModels = new ArrayList<>();
-        // show it
         call.enqueue(new Callback<List<Device>>() {
             @Override
             public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {

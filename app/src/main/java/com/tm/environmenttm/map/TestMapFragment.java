@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -18,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +42,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.tm.environmenttm.R;
+import com.tm.environmenttm.SearchLocationActivity;
+import com.tm.environmenttm.config.ConfigApp;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
 import com.tm.environmenttm.constant.ConstantValue;
@@ -46,9 +51,12 @@ import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.fragment.HomeFragment;
 import com.tm.environmenttm.fragment.InfoDeviceFragment;
+import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.AddressGeo;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.RealmTM;
+import com.tm.environmenttm.model.ResponeNumber;
+import com.tm.environmenttm.model.Type;
 
 import org.json.JSONObject;
 
@@ -63,6 +71,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,6 +88,10 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private TextView infoTitleGPS;
     private TextView infoSnippetGPS;
     private Button infoButton1, infoButton2;
+
+    private ImageView imgDeviceMap;
+    private LinearLayout llshowEnv, llshowEmpty;
+
     private OnInfoWindowElemTouchListener infoButtonListener;
     private OnInfoWindowElemTouchListener infoButtonListener1;
 
@@ -285,6 +298,10 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
         this.infoTitleGPS = (TextView) infoWindowGPS.findViewById(R.id.nameTxt);
         this.infoSnippetGPS = (TextView) infoWindowGPS.findViewById(R.id.addressTxt);
 
+        this.imgDeviceMap = (ImageView) infoWindow.findViewById(R.id.imgDeviceMap);
+        this.llshowEnv = (LinearLayout) infoWindow.findViewById(R.id.llshowEnv);
+        this.llshowEmpty = (LinearLayout) infoWindow.findViewById(R.id.llshowEmpty);
+
         this.infoButton1 = (Button) infoWindow.findViewById(R.id.btnOne);
         this.infoButton2 = (Button) infoWindow.findViewById(R.id.btnTwo);
 
@@ -297,6 +314,24 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 RealmTM.INSTANT.deleteAll(Device.class);
                 //add new
                 RealmTM.INSTANT.addRealm(device);
+
+                //update nguong cua thiet bi
+                ConfigApp configApp = (ConfigApp) RealmTM.INSTANT.findFirst(ConfigApp.class);
+
+                DemoAsyncTask asyncTask = new DemoAsyncTask();
+                asyncTask.execute(device);
+                try {
+                    ConfigApp configAppRespone = asyncTask.get();
+                    RealmTM.INSTANT.realm.beginTransaction();
+                    configApp.setLowerTemp(configAppRespone.getUpperTemp());
+                    configApp.setUpperTemp(configAppRespone.getLowerTemp());
+                    RealmTM.INSTANT.realm.commitTransaction();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
 
                 ConstantFunction.replaceFragment(getFragmentManager(), R.id.frgContent, new HomeFragment(), ConstantValue.FRG_HOME);
 
@@ -331,7 +366,8 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 .position(locationGPS)
                 .title("THIS IS MY")
                 .snippet(locationGPS.latitude + " : " + locationGPS.longitude)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_map_marker_radius)));
+        //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
@@ -348,6 +384,39 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindowGPS);
                     return infoWindowGPS;
                 } else {
+                    Device device = getDeviceByName(listDevice, marker.getTitle());
+                    Account account = (Account) RealmTM.INSTANT.findFirst(Account.class);
+
+                    if (!account.isRule()) {
+                        infoButton2.setVisibility(View.GONE);
+                    } else {
+                        infoButton2.setVisibility(View.VISIBLE);
+                    }
+
+                    if (!device.isActive()) {
+                        llshowEnv.setVisibility(View.GONE);
+                        llshowEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        llshowEnv.setVisibility(View.VISIBLE);
+                        llshowEmpty.setVisibility(View.GONE);
+                    }
+                    //set image
+                    List<Type> types = RealmTM.INSTANT.findAll(Type.class);
+                    for (Type type : types) {
+
+                        Log.d("device", "getInfoContents: device " + device.getTypeId());
+                        Log.d("tyoe", "getInfoContents: type " + type.getId());
+                        if (device.getTypeId().equals(type.getId())) {
+                            if (type.getNameType().equalsIgnoreCase(ConstantValue.PHOTON)) {
+                                imgDeviceMap.setImageResource(R.mipmap.ic_photon);
+                                Log.d("device", "getInfoContents: photon " + device.getNameDevice());
+                            } else if (type.getNameType().equalsIgnoreCase(ConstantValue.ELECTRON)) {
+                                imgDeviceMap.setImageResource(R.mipmap.ic_electron);
+                                Log.d("device", "getInfoContents: electron " + device.getNameDevice());
+                            }
+                        }
+                    }
+
                     infoTitle.setText(marker.getTitle());
                     infoSnippet.setText(marker.getSnippet());
                     infoButtonListener.setMarker(marker);
@@ -382,6 +451,34 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     }
 
+
+    class DemoAsyncTask extends AsyncTask<Device, Boolean, ConfigApp> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ConfigApp doInBackground(Device... params) {
+            ConfigApp result = new ConfigApp();
+            result.setLowerTemp(ConstantValue.LOWER_TEMP);
+            result.setLowerTemp(ConstantValue.UPPER_TEMP);
+            Device device = params[0];
+
+            try {
+                IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
+                Call<ResponeNumber> call = iServices.getLowTemp(device.getDeviceId());
+                result.setLowerTemp(call.execute().body().getResult());
+                call = iServices.getHeightTemp(device.getDeviceId());
+                result.setUpperTemp(call.execute().body().getResult());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+    }
+
     private void loadDevice() {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
         Call<List<Device>> call = iServices.getAllDevice();
@@ -395,11 +492,21 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     listDevice = response.body();
                     for (int i = 0; i < listDevice.size(); i++) {
                         Log.i("ListDEVICEDir", listDevice.get(i).getNameDevice() + " - " + listDevice.get(i).getLatitude() + " : " + listDevice.get(i).getLongitude());
-                        googleMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(listDevice.get(i).getLatitude(), listDevice.get(i).getLongitude()))
-                                .title(listDevice.get(i).getNameDevice())
-                                .snippet(listDevice.get(i).getLocation())
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        if (listDevice.get(i).isActive()) {
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(listDevice.get(i).getLatitude(), listDevice.get(i).getLongitude()))
+                                    .title(listDevice.get(i).getNameDevice())
+                                    .snippet(listDevice.get(i).getLocation())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_map_marker_green)));
+                            //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        } else {
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(listDevice.get(i).getLatitude(), listDevice.get(i).getLongitude()))
+                                    .title(listDevice.get(i).getNameDevice())
+                                    .snippet(listDevice.get(i).getLocation())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_map_marker_off_green)));
+//                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                        }
                     }
                     googleMap.getUiSettings().setZoomControlsEnabled(true);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locationGPS, 10));
@@ -555,7 +662,7 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
             }
 
             data = sb.toString();
-            Log.d("downloadUrl", data.toString());
+//            Log.d("downloadUrl", data.toString());
             br.close();
 
         } catch (Exception e) {
@@ -664,17 +771,17 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
             try {
                 jObject = new JSONObject(jsonData[0]);
-                Log.d("ParserTask", jsonData[0].toString());
+//                Log.d("ParserTask", jsonData[0].toString());
                 DataParserDirection parser = new DataParserDirection();
-                Log.d("ParserTask", parser.toString());
+//                Log.d("ParserTask", parser.toString());
 
                 // Starts parsing data
                 routes = parser.parse(jObject);
-                Log.d("ParserTask", "Executing routes");
-                Log.d("ParserTask", routes.toString());
+//                Log.d("ParserTask", "Executing routes");
+//                Log.d("ParserTask", routes.toString());
 
             } catch (Exception e) {
-                Log.d("ParserTask", e.toString());
+//                Log.d("ParserTask", e.toString());
                 e.printStackTrace();
             }
             return routes;

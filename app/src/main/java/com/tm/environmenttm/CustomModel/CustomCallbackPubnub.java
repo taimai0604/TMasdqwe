@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,6 +25,8 @@ import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.RealmTM;
 
+import java.util.Date;
+
 /**
  * Created by taima on 07/09/2017.
  */
@@ -33,11 +36,14 @@ public class CustomCallbackPubnub extends SubscribeCallback {
     private String deviceId;
     private String location;
     private Context context;
+    private int notify_no;
+    private final int MAX_NOTIFY = 9;
 
     public CustomCallbackPubnub(Context context, String deviceId, String location) {
         this.context = context;
         this.deviceId = deviceId;
         this.location = location;
+        this.notify_no = 0;
     }
 
     @Override
@@ -59,7 +65,6 @@ public class CustomCallbackPubnub extends SubscribeCallback {
             if (deviceId != null) {
                 String channel = message.getChannel();
                 if (channel.equals(ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + deviceId)) {
-                    Log.d(TAG, "message: " + message.getMessage());
                     Task task = new Task(context);
                     task.execute(message.getMessage().toString());
                 }
@@ -88,19 +93,26 @@ public class CustomCallbackPubnub extends SubscribeCallback {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            String result = s.replaceAll("\"","") + " - " + DateFormat.format("dd/MM/yyyy hh:mm:ss a", new Date()).toString();
+
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, LoginActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder notification =
                     new NotificationCompat.Builder(context)
                             .setSmallIcon(R.mipmap.ic_logo)
                             .setContentTitle(location)
-                            .setContentText(s)
+                            .setContentText(result)
                             .setDefaults(Notification.DEFAULT_SOUND)
                             .setContentIntent(pendingIntent).setAutoCancel(true);
 
             NotificationManager notificationManager;
             notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 
-            notificationManager.notify(0, notification.build());
+            if (notify_no < MAX_NOTIFY) {
+                notify_no = notify_no + 1;
+            } else {
+                notify_no = 0;
+            }
+            notificationManager.notify(notify_no, notification.build());
         }
 
         @Override

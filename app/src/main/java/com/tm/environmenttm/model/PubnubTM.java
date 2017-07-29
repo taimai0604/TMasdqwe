@@ -59,6 +59,9 @@ public class PubnubTM {
     }
 
     public void unsubChannel(Context context, Device device, String... channels) {
+        if(pubnub == null){
+            initPubnub(context, device);
+        }
         pubnub.removeListener(customCallbackPubnub);
         pubnub.unsubscribe()
                 .channels(Arrays.asList(channels))
