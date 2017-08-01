@@ -1,8 +1,5 @@
 package com.tm.environmenttm;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,7 +13,6 @@ import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.fragment.LoginFragment;
 import com.tm.environmenttm.model.RealmTM;
 import com.tm.environmenttm.model.Type;
-import com.tm.environmenttm.notification.MyBroadcastReceiver;
 
 import java.util.List;
 

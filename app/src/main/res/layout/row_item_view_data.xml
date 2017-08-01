@@ -3,4 +3,45 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#D9000000"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="15dp"
+        android:textSize="24sp"
+        android:text="@string/default_text_view" />
+
+    <TextView
+        android:id="@+id/tvContentEnvironment1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:text="@string/default_text_view"
+        android:textColor="#bf000000"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvContentEnvironment2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#bf000000"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:textSize="18sp"
+        android:text="@string/default_text_view" />
+
+    <TextView
+        android:id="@+id/tvContentEnvironment3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#bf000000"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:textSize="18sp"
+        android:text="@string/default_text_view" />
+
 </LinearLayout>

@@ -31,6 +31,7 @@
     <string name="type_device">Type</string>
     <string name="setting">Setting</string>
     <string name="home">Home</string>
+    <string name="view_data">View data</string>
 
     <string name="delete">Delete</string>
     <string name="log_delete">Are you sure?</string>

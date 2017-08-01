@@ -11,6 +11,7 @@ public class ConstantValue {
     public static final String FRG_ADD_DEVICE= "add_device";
     public static final String FRG_DEVICE_CONTROLLER = "device_controller";
     public static final String FRG_DEVICE = "device";
+    public static final String FRG_VIEW_DATA = "view_data";
     public static final String FRG_DEVICE_REAL_TIME = "device_real_time";
     public static final String FRG_MAP = "map";
     public static final String FRG_SETTING = "settting";
@@ -22,6 +23,7 @@ public class ConstantValue {
     public static final String TITLE_REAL_TIME = "Real time";
     public static final String TITLE_DEVICE_CONTROL = "Control";
     public static final String TITLE_DEVICE = "Device";
+    public static final String TITLE_VIEW_DATA= "Data";
     public static final String TITLE_SETTING = "Setting";
     public static final String TITLE_THINGSPEAK = "Thingspeak";
     public static final String TITLE_MAP = "Map";

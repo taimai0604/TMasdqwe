@@ -232,7 +232,6 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                             ArrayList<Entry> dewPoint = new ArrayList<Entry>();
                             int count = 1;
                             for (Environment environment : response.body()) {
-                                Log.d(TAG, "onResponse: " + environment);
                                 temperatures.add(new Entry(count, environment.getTempC()));
                                 heatIndexs.add(new Entry(count, environment.getHeatIndex()));
                                 humiditys.add(new Entry(count, environment.getHumidity()));
@@ -354,12 +353,12 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
     @Override
     public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-        Log.i("Gesture", "START, x: " + me.getX() + ", y: " + me.getY());
+//        Log.i("Gesture", "START, x: " + me.getX() + ", y: " + me.getY());
     }
 
     @Override
     public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-        Log.i("Gesture", "END, lastGesture: " + lastPerformedGesture);
+//        Log.i("Gesture", "END, lastGesture: " + lastPerformedGesture);
 
         // un-highlight values after the gesture is finished and no single-tap
         if (lastPerformedGesture != ChartTouchListener.ChartGesture.SINGLE_TAP)
@@ -368,39 +367,39 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
     @Override
     public void onChartLongPressed(MotionEvent me) {
-        Log.i("LongPress", "Chart longpressed.");
+//        Log.i("LongPress", "Chart longpressed.");
     }
 
     @Override
     public void onChartDoubleTapped(MotionEvent me) {
-        Log.i("DoubleTap", "Chart double-tapped.");
+//        Log.i("DoubleTap", "Chart double-tapped.");
     }
 
     @Override
     public void onChartSingleTapped(MotionEvent me) {
-        Log.i("SingleTap", "Chart single-tapped.");
+//        Log.i("SingleTap", "Chart single-tapped.");
     }
 
     @Override
     public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
-        Log.i("Fling", "Chart flinged. VeloX: " + velocityX + ", VeloY: " + velocityY);
+//        Log.i("Fling", "Chart flinged. VeloX: " + velocityX + ", VeloY: " + velocityY);
     }
 
     @Override
     public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
-        Log.i("Scale / Zoom", "ScaleX: " + scaleX + ", ScaleY: " + scaleY);
+//        Log.i("Scale / Zoom", "ScaleX: " + scaleX + ", ScaleY: " + scaleY);
     }
 
     @Override
     public void onChartTranslate(MotionEvent me, float dX, float dY) {
-        Log.i("Translate / Move", "dX: " + dX + ", dY: " + dY);
+//        Log.i("Translate / Move", "dX: " + dX + ", dY: " + dY);
     }
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        Log.i("Entry selected", e.toString());
-        Log.i("LOWHIGH", "low: " + mChart.getLowestVisibleX() + ", high: " + mChart.getHighestVisibleX());
-        Log.i("MIN MAX", "xmin: " + mChart.getXChartMin() + ", xmax: " + mChart.getXChartMax() + ", ymin: " + mChart.getYChartMin() + ", ymax: " + mChart.getYChartMax());
+//        Log.i("Entry selected", e.toString());
+//        Log.i("LOWHIGH", "low: " + mChart.getLowestVisibleX() + ", high: " + mChart.getHighestVisibleX());
+//        Log.i("MIN MAX", "xmin: " + mChart.getXChartMin() + ", xmax: " + mChart.getXChartMax() + ", ymin: " + mChart.getYChartMin() + ", ymax: " + mChart.getYChartMax());
     }
 
     @Override

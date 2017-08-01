@@ -7,9 +7,14 @@
             android:icon="@mipmap/ic_home"
             android:title="@string/home" />
         <item
+            android:id="@+id/nav_view_data"
+            android:icon="@mipmap/ic_search"
+            android:title="@string/view_data" />
+        <item
         android:id="@+id/nav_device"
         android:icon="@mipmap/ic_device_mobile"
         android:title="@string/device" />
+
         <item
             android:id="@+id/nav_map"
             android:icon="@mipmap/ic_map"

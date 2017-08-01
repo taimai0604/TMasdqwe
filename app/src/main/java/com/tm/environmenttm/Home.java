@@ -47,6 +47,7 @@ import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.fragment.DeviceFragment;
 import com.tm.environmenttm.fragment.HomeFragment;
 import com.tm.environmenttm.fragment.SettingFragment;
+import com.tm.environmenttm.fragment.ViewDataFragment;
 import com.tm.environmenttm.map.TestMapFragment;
 import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.Device;
@@ -107,7 +108,7 @@ public class Home extends AppCompatActivity
 
         //get account
         account = (Account) RealmTM.INSTANT.findFirst(Account.class);
-        if(account.isRule() == false){
+        if (account.isRule() == false) {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_home_client_drawer);
         }
@@ -138,7 +139,7 @@ public class Home extends AppCompatActivity
             PubnubTM.INSTANT.initPubnub(getApplicationContext(), device);
         }
 
-        if(device != null){
+        if (device != null) {
             checkErrorDevice();
         }
         frgContent = new HomeFragment();
@@ -153,7 +154,7 @@ public class Home extends AppCompatActivity
         call.enqueue(new Callback<Device>() {
             @Override
             public void onResponse(Call<Device> call, Response<Device> response) {
-                if(response.body() == null){
+                if (response.body() == null) {
                     RealmTM.INSTANT.deleteAll(Device.class);
                 }
             }
@@ -183,6 +184,12 @@ public class Home extends AppCompatActivity
             frgTag = ConstantValue.FRG_HOME;
             frgContent = new HomeFragment();
             ConstantFunction.replaceFragment(fragmentManager, R.id.frgContent, frgContent, frgTag);
+        } else if (id == R.id.nav_view_data) {
+//            frgTag = ConstantValue.FRG_VIEW_DATA;
+//            frgContent = new ViewDataFragment();
+//            ConstantFunction.replaceFragment(fragmentManager, R.id.frgContent, frgContent, frgTag);
+            Intent intent = new Intent(getApplicationContext(), ViewDataActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_device) {
             frgTag = ConstantValue.FRG_DEVICE;
             frgContent = new DeviceFragment();
@@ -190,7 +197,6 @@ public class Home extends AppCompatActivity
         } else if (id == R.id.nav_map) {
             frgTag = ConstantValue.FRG_MAP;
             frgContent = new TestMapFragment();
-
             ConstantFunction.replaceFragment(fragmentManager, R.id.frgContent, frgContent, frgTag);
         } else if (id == R.id.nav_setting) {
             frgTag = ConstantValue.FRG_SETTING;
@@ -199,7 +205,7 @@ public class Home extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             // unsub pubnub
             device = (Device) RealmTM.INSTANT.findFirst(Device.class);
-            if(device != null){
+            if (device != null) {
                 Device deviceTmp = new Device();
                 deviceTmp.setDeviceId(device.getDeviceId());
                 PubnubTM.INSTANT.unsubChannel(this, deviceTmp, ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + deviceTmp.getDeviceId());
@@ -386,7 +392,7 @@ public class Home extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tvFullName:
             case R.id.imgAvatar:
             case R.id.tvEmail:

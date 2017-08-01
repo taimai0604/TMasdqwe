@@ -7,6 +7,7 @@ package com.tm.environmenttm.constant;
 public class ConstantURL {
     //server
     public static final String SERVER = "https://cryptic-sea-66379.herokuapp.com/";
+//    public static final String SERVER = "http://103.9.158.232:3000";
 
     //account
     public static final String CREATE_ACCOUNT = "api/Accounts";

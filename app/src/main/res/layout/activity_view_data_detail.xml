@@ -6,4 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.tm.environmenttm.ViewDataDetail">
 
+    <ListView
+        android:id="@+id/lv_view_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>
