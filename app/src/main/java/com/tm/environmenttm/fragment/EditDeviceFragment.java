@@ -1,5 +1,6 @@
 package com.tm.environmenttm.fragment;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -112,16 +114,20 @@ public class EditDeviceFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_save) {
-            device.setNameDevice(edNameDevice.getText().toString());
-            device.setTypeId(getTypeId(tvType.getText().toString()));
-            device.setDeviceId(edDeviceId.getText().toString());
-            device.setKeyThingspeak(edKeyThingspeak.getText().toString());
-
             String address = edLocation.getText().toString();
-            String url = TestMapFragment.getUrl(address);
-            FetchUrlGeo FetchUrl = new FetchUrlGeo();
-            FetchUrl.execute(url);
-
+            if (!address.isEmpty()) {
+                device.setNameDevice(edNameDevice.getText().toString());
+                device.setTypeId(getTypeId(tvType.getText().toString()));
+                device.setDeviceId(edDeviceId.getText().toString());
+                device.setKeyThingspeak(edKeyThingspeak.getText().toString());
+                String url = TestMapFragment.getUrl(address);
+                FetchUrlGeo FetchUrl = new FetchUrlGeo();
+                FetchUrl.execute(url);
+            } else {
+                edLocation.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(edLocation, InputMethodManager.SHOW_IMPLICIT);
+            }
         }
 
         return super.onOptionsItemSelected(item);

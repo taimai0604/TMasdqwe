@@ -3,6 +3,7 @@ package com.tm.environmenttm.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,9 @@ public class CustomListViewDataAdapter extends ArrayAdapter<Environment> {
         TextView tvContent1;
         TextView tvContent2;
         TextView tvContent3;
+        TextView tvContentHumidity;
+        TextView tvContentLight;
+        TextView tvContentDewpoint;
     }
 
     public CustomListViewDataAdapter(@NonNull Context context, List<Environment> data) {
@@ -41,25 +45,26 @@ public class CustomListViewDataAdapter extends ArrayAdapter<Environment> {
         Environment environment = getItem(position);
         ViewHolder viewHolder;
 
+        viewHolder = new ViewHolder();
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        convertView = inflater.inflate(R.layout.row_item_view_data, parent, false);
+        viewHolder.tvLocation = (TextView) convertView.findViewById(R.id.tvDate);
+        viewHolder.tvContent1 = (TextView) convertView.findViewById(R.id.tvContentEnvironment1);
+        viewHolder.tvContent2 = (TextView) convertView.findViewById(R.id.tvContentEnvironment2);
+        viewHolder.tvContent3 = (TextView) convertView.findViewById(R.id.tvContentEnvironment3);
 
-        if (convertView == null) {
+        viewHolder.tvContentHumidity = (TextView) convertView.findViewById(R.id.tvContentHumidity);
+        viewHolder.tvContentLight = (TextView) convertView.findViewById(R.id.tvContentLight);
+        viewHolder.tvContentDewpoint = (TextView) convertView.findViewById(R.id.tvContentDewpoint);
 
-            viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.row_item_view_data, parent, false);
-            viewHolder.tvLocation = (TextView) convertView.findViewById(R.id.tvDate);
-            viewHolder.tvContent1 = (TextView) convertView.findViewById(R.id.tvContentEnvironment1);
-            viewHolder.tvContent2 = (TextView) convertView.findViewById(R.id.tvContentEnvironment2);
-            viewHolder.tvContent3 = (TextView) convertView.findViewById(R.id.tvContentEnvironment3);
-
-            viewHolder.tvLocation.setText(DateFormat.format("dd/MM/yyyy HH:mm:ss", environment.getDatedCreated()).toString());
-            viewHolder.tvContent1.setText("Temperature: " + environment.getTempC() + "; Humidity: " + environment.getHumidity());
-            viewHolder.tvContent2.setText("Pressure: " + environment.getPressure() + "; Light: " + environment.getLightLevel());
-            viewHolder.tvContent3.setText("Heat index: " + environment.getHeatIndex() + "; Dew point: " + environment.getDewPoint());
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
+        viewHolder.tvLocation.setText(DateFormat.format("dd/MM/yyyy HH:mm:ss", environment.getDatedCreated()).toString());
+        viewHolder.tvContent1.setText("Temperature: " + environment.getTempC());
+        viewHolder.tvContentHumidity.setText("Humidity: " + environment.getHumidity());
+        viewHolder.tvContent2.setText("Pressure: " + environment.getPressure());
+        viewHolder.tvContentLight.setText("Light: " + environment.getLightLevel());
+        viewHolder.tvContent3.setText("Heat index: " + environment.getHeatIndex());
+        viewHolder.tvContentDewpoint.setText("Dew point: " + environment.getDewPoint());
+        convertView.setTag(viewHolder);
 
         return convertView;
     }

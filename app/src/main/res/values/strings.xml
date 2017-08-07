@@ -74,4 +74,11 @@
     <!---->
     <string name="tempc">\u2103</string>
     <string name="tempf">\u2109</string>
+
+    <!--Export excel-->
+    <string name="export_excel">Export Excel</string>
+    <string name="info_export_excel">Export Excel</string>
+    <string name="info_export_excel_success">Success file Excel! Would you like to open excel file </string>
+    <string name="info_export_excel_fail">Error</string>
+
 </resources>

@@ -1,47 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#D9000000"
         android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
         android:paddingTop="10dp"
-        android:paddingLeft="15dp"
-        android:textSize="24sp"
-        android:text="@string/default_text_view" />
-
-    <TextView
-        android:id="@+id/tvContentEnvironment1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:paddingLeft="15dp"
         android:text="@string/default_text_view"
-        android:textColor="#bf000000"
-        android:textSize="18sp" />
+        android:textColor="#D9000000"
+        android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/tvContentEnvironment2"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#bf000000"
-        android:paddingBottom="10dp"
-        android:paddingLeft="15dp"
-        android:textSize="18sp"
-        android:text="@string/default_text_view" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tvContentEnvironment3"
+        <TextView
+            android:id="@+id/tvContentEnvironment1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:text="@string/default_text_view"
+            android:textColor="#bf000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvContentHumidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:text="@string/default_text_view"
+            android:textAlignment="gravity"
+            android:textColor="#bf000000"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#bf000000"
-        android:paddingBottom="10dp"
-        android:paddingLeft="15dp"
-        android:textSize="18sp"
-        android:text="@string/default_text_view" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvContentEnvironment2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:text="@string/default_text_view"
+            android:textColor="#bf000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvContentLight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:text="@string/default_text_view"
+            android:textAlignment="gravity"
+            android:textColor="#bf000000"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvContentEnvironment3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:text="@string/default_text_view"
+            android:textColor="#bf000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvContentDewpoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:text="@string/default_text_view"
+            android:textAlignment="gravity"
+            android:textColor="#bf000000"
+            android:textSize="18sp" />
+    </LinearLayout>
 
 </LinearLayout>

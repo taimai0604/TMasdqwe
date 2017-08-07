@@ -1,8 +1,6 @@
 package com.tm.environmenttm;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -10,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,7 +34,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.tm.environmenttm.Services.ServiceCallNotification;
 import com.tm.environmenttm.config.ConfigApp;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
@@ -47,15 +43,11 @@ import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.fragment.DeviceFragment;
 import com.tm.environmenttm.fragment.HomeFragment;
 import com.tm.environmenttm.fragment.SettingFragment;
-import com.tm.environmenttm.fragment.ViewDataFragment;
 import com.tm.environmenttm.map.TestMapFragment;
 import com.tm.environmenttm.model.Account;
 import com.tm.environmenttm.model.Device;
 import com.tm.environmenttm.model.PubnubTM;
 import com.tm.environmenttm.model.RealmTM;
-import com.tm.environmenttm.notification.MyBroadcastReceiver;
-
-import java.util.concurrent.ExecutionException;
 
 import io.realm.Realm;
 import retrofit2.Call;
@@ -255,7 +247,12 @@ public class Home extends AppCompatActivity
         } else {
             Log.d("onCreate", "Google Play Services available.");
         }
-
+        if(checkFilePermission()) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+            }
+        }
         if (checkLocationPermission()) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -269,6 +266,42 @@ public class Home extends AppCompatActivity
                 //end gps
 
             }
+        }
+    }
+    public static final int MY_PERMISSIONS_REQUEST_STORAGE = 99;
+
+    private boolean checkFilePermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                new AlertDialog.Builder(this)
+                        .setTitle("GPS is settings")
+                        .setMessage("GPS is not enabled. Do you want to go to settings menu?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ActivityCompat.requestPermissions(Home.this,
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        MY_PERMISSIONS_REQUEST_STORAGE);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_STORAGE);
+
+
+            }
+            return false;
+        } else {
+            return true;
         }
     }
 
