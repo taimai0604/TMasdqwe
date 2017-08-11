@@ -65,7 +65,7 @@ public interface IRESTfull {
 
     //delete device
     @POST(ConstantURL.DELETE_DEVICE)
-    Call<ResponeBoolean> deleteDevice(@Query("deviceId") String deviceId);
+    Call<ResponeBoolean> deleteDevice(@Query("deviceId") String deviceId,@Query("deviceIdParticle") String deviceIdParticle,@Query("channelID") float channelID );
 
     //environment current
     @GET(ConstantURL.GET_INFO_ENVIRONMENT_CURRENT)

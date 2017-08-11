@@ -32,7 +32,6 @@ import com.tm.environmenttm.model.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +44,6 @@ public class EditDeviceFragment extends Fragment {
     private TextView tvType;
     private EditText edDeviceId;
     private EditText edLocation;
-    private EditText edKeyThingspeak;
     Device device;
 
     public EditDeviceFragment() {
@@ -68,14 +66,12 @@ public class EditDeviceFragment extends Fragment {
         tvType = (TextView) view.findViewById(R.id.tvType);
         edDeviceId = (EditText) view.findViewById(R.id.edDeviceId);
         edLocation = (EditText) view.findViewById(R.id.edLocation);
-        edKeyThingspeak = (EditText) view.findViewById(R.id.edKeyThingspeak);
 
         device = (Device) getArguments().getSerializable("device");
 
         edNameDevice.setText(device.getNameDevice());
         edDeviceId.setText(device.getDeviceId());
         edLocation.setText(device.getLocation());
-        edKeyThingspeak.setText(device.getKeyThingspeak());
 
         loadTypeForDevice(device.getTypeId());
 
@@ -119,7 +115,6 @@ public class EditDeviceFragment extends Fragment {
                 device.setNameDevice(edNameDevice.getText().toString());
                 device.setTypeId(getTypeId(tvType.getText().toString()));
                 device.setDeviceId(edDeviceId.getText().toString());
-                device.setKeyThingspeak(edKeyThingspeak.getText().toString());
                 String url = TestMapFragment.getUrl(address);
                 FetchUrlGeo FetchUrl = new FetchUrlGeo();
                 FetchUrl.execute(url);

@@ -45,7 +45,6 @@ public class AddDeivceFragment extends Fragment {
     private TextView tvType;
     private EditText edDeviceId;
     private EditText edLocation;
-    private EditText edKeyThingspeak;
     Device device;
 
     private List<String> types;
@@ -75,14 +74,12 @@ public class AddDeivceFragment extends Fragment {
         tvType = (TextView) view.findViewById(R.id.tvType);
         edDeviceId = (EditText) view.findViewById(R.id.edDeviceId);
         edLocation = (EditText) view.findViewById(R.id.edLocation);
-        edKeyThingspeak = (EditText) view.findViewById(R.id.edKeyThingspeak);
 
         loadTypeForDevice();
 
         edNameDevice.setText("");
         edDeviceId.setText("");
         edLocation.setText("");
-        edKeyThingspeak.setText("");
 
         tvType.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +118,6 @@ public class AddDeivceFragment extends Fragment {
                 device.setNameDevice(edNameDevice.getText().toString());
                 device.setTypeId(getTypeId(tvType.getText().toString()));
                 device.setDeviceId(edDeviceId.getText().toString());
-                device.setKeyThingspeak(edKeyThingspeak.getText().toString());
                 String url = TestMapFragment.getUrl(address);
                 FetchUrlGeo FetchUrl = new FetchUrlGeo();
                 FetchUrl.execute(url);

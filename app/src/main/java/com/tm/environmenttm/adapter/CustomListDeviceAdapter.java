@@ -60,7 +60,7 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                deleteDevice(dataModel.getDeviceId(), position);
+                                deleteDevice(dataModel, position);
                             }
                         })
                         .show();
@@ -68,9 +68,9 @@ public class CustomListDeviceAdapter extends ArrayAdapter<Device> implements Vie
         }
     }
 
-    private void deleteDevice(String deviceId, final int position) {
+    private void deleteDevice(Device device, final int position) {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
-        Call<ResponeBoolean> call = iServices.deleteDevice(deviceId);
+        Call<ResponeBoolean> call = iServices.deleteDevice(device.getId(),device.getDeviceId(),device.getChannelID());
         // show it
         call.enqueue(new Callback<ResponeBoolean>() {
             @Override

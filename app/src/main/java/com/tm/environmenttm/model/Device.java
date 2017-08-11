@@ -8,7 +8,7 @@ import io.realm.RealmObject;
  * Created by taima on 06/27/2017.
  */
 
-public class Device extends RealmObject implements Serializable{
+public class Device extends RealmObject implements Serializable {
     private String id;
     private String deviceId;
     private String nameDevice;
@@ -16,23 +16,27 @@ public class Device extends RealmObject implements Serializable{
     private boolean active;
     private double latitude;
     private double longitude;
+    private float channelID;
+    private String KeyThingspeak;
     private String description;
     private String typeId;
 
-    public Device(){
+    public Device() {
 
     }
 
-    public Device(String deviceId, String nameDevice, String location, boolean active, double latitude, double longitude, String description, String typeId, String keyThingspeak) {
+    public Device(String id, String deviceId, String nameDevice, String location, boolean active, double latitude, double longitude, float channelID, String keyThingspeak, String description, String typeId) {
+        this.id = id;
         this.deviceId = deviceId;
         this.nameDevice = nameDevice;
         this.location = location;
         this.active = active;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.channelID = channelID;
+        this.KeyThingspeak = keyThingspeak;
         this.description = description;
         this.typeId = typeId;
-        KeyThingspeak = keyThingspeak;
     }
 
     public String getId() {
@@ -115,7 +119,11 @@ public class Device extends RealmObject implements Serializable{
         KeyThingspeak = keyThingspeak;
     }
 
-    private String KeyThingspeak;
+    public float getChannelID() {
+        return channelID;
+    }
 
-
+    public void setChannelID(float channelID) {
+        this.channelID = channelID;
+    }
 }
