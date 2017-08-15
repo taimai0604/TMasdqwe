@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -66,6 +67,7 @@ public class Home extends AppCompatActivity
     private FragmentTransaction fragmentTransaction;
     private Fragment frgContent;
     private String frgTag;
+    private FrameLayout frgLayout;
 
     private TextView tvFullName;
     private TextView tvEmail;
@@ -97,6 +99,9 @@ public class Home extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        frgLayout = (FrameLayout) findViewById(R.id.frgContent);
+        frgLayout.removeAllViews();
 
         //get account
         account = (Account) RealmTM.INSTANT.findFirst(Account.class);
