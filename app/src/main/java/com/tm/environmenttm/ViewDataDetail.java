@@ -91,9 +91,14 @@ public class ViewDataDetail extends AppCompatActivity implements View.OnClickLis
 
     private Context context;
 
+    private Date fromDate;
+    private Date toDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         setContentView(R.layout.activity_view_data_detail);
         device = (Device) getIntent().getSerializableExtra("device");
         ConstantFunction.changeTitleBar(this, device.getLocation());
@@ -105,13 +110,13 @@ public class ViewDataDetail extends AppCompatActivity implements View.OnClickLis
         fYear = c.get(Calendar.YEAR);
         fMonth = c.get(Calendar.MONTH);
         fDay = c.get(Calendar.DAY_OF_MONTH);
-        Date fromDate = c.getTime();
+        fromDate = c.getTime();
 
         c.add(Calendar.DAY_OF_MONTH, 1);
         tYear = c.get(Calendar.YEAR);
         tMonth = c.get(Calendar.MONTH);
         tDay = c.get(Calendar.DAY_OF_MONTH);
-        Date toDate = c.getTime();
+        toDate = c.getTime();
         loadData(fromDate, toDate, DEFAULT_SIZE);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -153,6 +158,12 @@ public class ViewDataDetail extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     private void loadData(Date fromDate, Date toDate, int size) {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
         if (positioinSelected == (items.length - 1)) {
@@ -192,11 +203,11 @@ public class ViewDataDetail extends AppCompatActivity implements View.OnClickLis
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.export_excel:
-                final File fileExcel = Excel.exportFileExcel(getApplicationContext(), dataModels, listView);
+                final File fileExcel = Excel.exportFileExcel(getApplicationContext(), dataModels, listView, fromDate, toDate);
                 if (fileExcel != null) {
                     new MaterialDialog.Builder(this)
                             .title(getResources().getString(R.string.info_export_excel))
-                            .content(getResources().getString(R.string.info_export_excel_success)+ " " + fileExcel.getPath()+" ?")
+                            .content(getResources().getString(R.string.info_export_excel_success) + " " + fileExcel.getPath() + " ?")
                             .positiveText(R.string.agree)
                             .negativeText(R.string.disagree)
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -237,9 +248,9 @@ public class ViewDataDetail extends AppCompatActivity implements View.OnClickLis
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 Calendar c = Calendar.getInstance();
                                 c.set(fYear, fMonth, fDay);
-                                Date fromDate = c.getTime();
+                                fromDate = c.getTime();
                                 c.set(tYear, tMonth, tDay);
-                                Date toDate = c.getTime();
+                                toDate = c.getTime();
 
                                 loadData(fromDate, toDate, size_data);
 

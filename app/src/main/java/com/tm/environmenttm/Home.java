@@ -223,7 +223,7 @@ public class Home extends AppCompatActivity
 
     private void addFragment(Fragment fragment, String tag) {
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.frgContent, fragment, tag);
+        fragmentTransaction.replace(R.id.frgContent, fragment, tag);
         fragmentTransaction.commit();
     }
 

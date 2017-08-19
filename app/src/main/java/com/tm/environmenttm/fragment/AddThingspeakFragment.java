@@ -1,6 +1,7 @@
 package com.tm.environmenttm.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tm.environmenttm.R;
 import com.tm.environmenttm.constant.ConstantFunction;
 import com.tm.environmenttm.constant.ConstantURL;
-import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.model.ChartThingspeak;
@@ -31,8 +31,12 @@ public class AddThingspeakFragment extends Fragment {
     private EditText edDecription;
     private Device device;
 
+    @SuppressLint("ValidFragment")
     public AddThingspeakFragment(Device device) {
         this.device = device;
+    }
+    @SuppressLint("ValidFragment")
+    public AddThingspeakFragment() {
     }
 
 

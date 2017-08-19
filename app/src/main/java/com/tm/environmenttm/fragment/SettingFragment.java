@@ -1,5 +1,6 @@
 package com.tm.environmenttm.fragment;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -45,8 +46,14 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
 
     private final Context context;
 
+    @SuppressLint("ValidFragment")
     public SettingFragment(Context context) {
         this.context = context;
+    }
+
+    @SuppressLint("ValidFragment")
+    public SettingFragment() {
+        context = null;
     }
 
     @Override
@@ -125,6 +132,7 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
         manager.cancel(pendingIntent);
         Log.e("Alarm", "Canceled");
     }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
