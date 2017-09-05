@@ -20,7 +20,7 @@ public class ServiceCallNotification extends Service {
     private Device device;
 
     public ServiceCallNotification() {
-        device = (Device) RealmTM.INSTANT.findFirst(Device.class);
+
     }
 
     @Nullable
@@ -31,6 +31,7 @@ public class ServiceCallNotification extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        device = (Device) RealmTM.INSTANT.findFirst(Device.class);
         PubnubTM.INSTANT.subChannel(this, device, ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + device.getDeviceId());
         return START_STICKY;
     }
@@ -39,6 +40,8 @@ public class ServiceCallNotification extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        device = (Device) RealmTM.INSTANT.findFirst(Device.class);
         PubnubTM.INSTANT.unsubChannel(this, device, ConstantValue.CHANNEL_NOTIFICATION_TEMP + "-" + device.getDeviceId());
+        PubnubTM.INSTANT.updateDevice(device);
     }
 }

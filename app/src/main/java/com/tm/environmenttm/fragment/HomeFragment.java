@@ -135,7 +135,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
             srlHome.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    ConstantFunction.replaceFragmentNotBackStack(getFragmentManager(),R.id.frgContent, new HomeFragment(), ConstantValue.FRG_HOME);
+                    ConstantFunction.replaceFragmentNotBackStack(getFragmentManager(), R.id.frgContent, new HomeFragment(), ConstantValue.FRG_HOME);
                 }
             });
         }
@@ -448,12 +448,16 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                 if (response.code() == 200) {
                     Gson gson = new Gson();
                     EnvironmentCurrent environmentCurrent = gson.fromJson(response.body(), EnvironmentCurrent.class);
-                    tvTemperature.setText(environmentCurrent.getT() + "");
-                    tvHumidity.setText(environmentCurrent.getH() + "");
-                    tvPressure.setText(environmentCurrent.getPa() + "");
-                    tvLight.setText(environmentCurrent.getLa() + "");
-                    tvHeatIndex.setText(environmentCurrent.getHi() + "");
-                    tvDewPoint.setText(environmentCurrent.getDp() + "");
+                    if (environmentCurrent != null) {
+                        tvTemperature.setText(environmentCurrent.getT() + "");
+                        tvHumidity.setText(environmentCurrent.getH() + "");
+                        tvPressure.setText(environmentCurrent.getPa() + "");
+                        tvLight.setText(environmentCurrent.getLa() + "");
+                        tvHeatIndex.setText(environmentCurrent.getHi() + "");
+                        tvDewPoint.setText(environmentCurrent.getDp() + "");
+                    } else {
+                        ConstantFunction.showToast(getContext(), "error");
+                    }
                     dialog.dismiss();
                 } else {
                     dialog.dismiss();
@@ -477,7 +481,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         MenuItem itemControl = menu.findItem(R.id.action_control);
 
         Account account = (Account) RealmTM.INSTANT.findFirst(Account.class);
-        if(!account.isRule()){
+        if (!account.isRule()) {
             itemControl.setVisible(false);
         }
     }

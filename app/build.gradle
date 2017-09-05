@@ -46,4 +46,5 @@ dependencies {
     compile 'info.hoang8f:fbutton:1.0.5'
     testCompile 'junit:junit:4.12'
     compile files('libs/poi-3.7.jar')
+    compile 'com.android.support:multidex:1.0.1'
 }

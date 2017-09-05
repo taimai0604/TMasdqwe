@@ -18,6 +18,11 @@ import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
+import com.pubnub.api.PNConfiguration;
+import com.pubnub.api.PubNub;
+import com.tm.environmenttm.AsyncTask.DemoAsyncTask;
+import com.tm.environmenttm.CustomModel.CustomCallbackPubnub;
+import com.tm.environmenttm.Services.ServiceCallNotification;
 import com.tm.environmenttm.adapter.CustomListLocationAdapter;
 import com.tm.environmenttm.config.ConfigApp;
 import com.tm.environmenttm.constant.ConstantFunction;
@@ -26,11 +31,13 @@ import com.tm.environmenttm.constant.ConstantValue;
 import com.tm.environmenttm.controller.IRESTfull;
 import com.tm.environmenttm.controller.RetrofitClient;
 import com.tm.environmenttm.model.Device;
+import com.tm.environmenttm.model.PubnubTM;
 import com.tm.environmenttm.model.RealmTM;
 import com.tm.environmenttm.model.ResponeNumber;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -47,6 +54,7 @@ public class SearchLocationActivity extends AppCompatActivity {
     private Context context = this;
     private ConfigApp configApp;
 
+    private Device oldDevice;
 
     private CustomListLocationAdapter adapter;
 
@@ -65,8 +73,15 @@ public class SearchLocationActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public static final String TAG = "test thread";
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                dang test --------------------------------------
+                oldDevice = (Device) RealmTM.INSTANT.findFirst(Device.class);
+                if(oldDevice != null) {
+                }
+
                 Device device = dataModels.get(position);
                 //remove
                 RealmTM.INSTANT.deleteAll(Device.class);
@@ -75,14 +90,17 @@ public class SearchLocationActivity extends AppCompatActivity {
 
                 configApp = (ConfigApp) RealmTM.INSTANT.findFirst(ConfigApp.class);
 
-                DemoAsyncTask asyncTask = new DemoAsyncTask();
+                DemoAsyncTask asyncTask = new DemoAsyncTask(getApplicationContext());
                 asyncTask.execute(device);
                 try {
                     ConfigApp configAppRespone = asyncTask.get();
                     RealmTM.INSTANT.realm.beginTransaction();
                     configApp.setLowerTemp(configAppRespone.getUpperTemp());
                     configApp.setUpperTemp(configAppRespone.getLowerTemp());
+                    configApp.setNotificationTemp(false);
                     RealmTM.INSTANT.realm.commitTransaction();
+
+                    //un sub pubnub
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
@@ -91,6 +109,7 @@ public class SearchLocationActivity extends AppCompatActivity {
 
                 setResult(Activity.RESULT_OK);
                 Home.refresh = true;
+
                 finish();
 
 
@@ -98,32 +117,7 @@ public class SearchLocationActivity extends AppCompatActivity {
         });
     }
 
-    class DemoAsyncTask extends AsyncTask<Device, Boolean, ConfigApp> {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected ConfigApp doInBackground(Device... params) {
-            ConfigApp result = new ConfigApp();
-            result.setLowerTemp(ConstantValue.LOWER_TEMP);
-            result.setLowerTemp(ConstantValue.UPPER_TEMP);
-            Device device = params[0];
-
-            try {
-                IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
-                Call<ResponeNumber> call = iServices.getLowTemp(device.getDeviceId());
-                result.setLowerTemp(call.execute().body().getResult());
-                call = iServices.getHeightTemp(device.getDeviceId());
-                result.setUpperTemp(call.execute().body().getResult());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return result;
-        }
-    }
 
 
     public void loadDevices(String nameLocation) {

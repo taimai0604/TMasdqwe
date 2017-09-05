@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.tm.environmenttm.AsyncTask.DemoAsyncTask;
 import com.tm.environmenttm.R;
 import com.tm.environmenttm.SearchLocationActivity;
 import com.tm.environmenttm.config.ConfigApp;
@@ -318,13 +319,14 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 //update nguong cua thiet bi
                 ConfigApp configApp = (ConfigApp) RealmTM.INSTANT.findFirst(ConfigApp.class);
 
-                DemoAsyncTask asyncTask = new DemoAsyncTask();
+                DemoAsyncTask asyncTask = new DemoAsyncTask(getContext());
                 asyncTask.execute(device);
                 try {
                     ConfigApp configAppRespone = asyncTask.get();
                     RealmTM.INSTANT.realm.beginTransaction();
                     configApp.setLowerTemp(configAppRespone.getUpperTemp());
                     configApp.setUpperTemp(configAppRespone.getLowerTemp());
+                    configApp.setNotificationTemp(false);
                     RealmTM.INSTANT.realm.commitTransaction();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -451,33 +453,6 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     }
 
-
-    class DemoAsyncTask extends AsyncTask<Device, Boolean, ConfigApp> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected ConfigApp doInBackground(Device... params) {
-            ConfigApp result = new ConfigApp();
-            result.setLowerTemp(ConstantValue.LOWER_TEMP);
-            result.setLowerTemp(ConstantValue.UPPER_TEMP);
-            Device device = params[0];
-
-            try {
-                IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);
-                Call<ResponeNumber> call = iServices.getLowTemp(device.getDeviceId());
-                result.setLowerTemp(call.execute().body().getResult());
-                call = iServices.getHeightTemp(device.getDeviceId());
-                result.setUpperTemp(call.execute().body().getResult());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return result;
-        }
-    }
 
     private void loadDevice() {
         IRESTfull iServices = RetrofitClient.getClient(ConstantURL.SERVER).create(IRESTfull.class);

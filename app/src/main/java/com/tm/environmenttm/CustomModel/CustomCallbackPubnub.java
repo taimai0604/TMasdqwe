@@ -39,6 +39,14 @@ public class CustomCallbackPubnub extends SubscribeCallback {
     private int notify_no;
     private final int MAX_NOTIFY = 9;
 
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
     public CustomCallbackPubnub(Context context, String deviceId, String location) {
         this.context = context;
         this.deviceId = deviceId;

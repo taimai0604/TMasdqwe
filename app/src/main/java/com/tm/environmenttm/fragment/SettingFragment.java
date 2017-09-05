@@ -91,47 +91,47 @@ public class SettingFragment extends Fragment implements CompoundButton.OnChecke
         sbNotificationTemp.setOnCheckedChangeListener(this);
 
         //noti
-        sbNotification = (SwitchButton) rootView.findViewById(R.id.sbNotification);
-        sbNotification.setChecked(configApp.isNotification());
-        sbNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                realm.beginTransaction();
-                configApp.setNotification(isChecked);
-                realm.commitTransaction();
-
-                checkService(configApp.isNotification());
-
-            }
-        });
+//        sbNotification = (SwitchButton) rootView.findViewById(R.id.sbNotification);
+//        sbNotification.setChecked(configApp.isNotification());
+//        sbNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                realm.beginTransaction();
+//                configApp.setNotification(isChecked);
+//                realm.commitTransaction();
+//
+//                checkService(configApp.isNotification());
+//
+//            }
+//        });
 
         Intent alarmIntent = new Intent(context, MyBroadcastReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0);
 
-        checkService(configApp.isNotification());
+//        checkService(configApp.isNotification());
         //
         return rootView;
     }
 
-    private void checkService(boolean notification) {
-        if (notification) {
-            start();
-        } else
-            cancel();
-    }
-
-    public void start() {
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        int interval = 1000;
-        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
-        Log.e("Alarm", "started");
-    }
-
-    public void cancel() {
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        manager.cancel(pendingIntent);
-        Log.e("Alarm", "Canceled");
-    }
+//    private void checkService(boolean notification) {
+//        if (notification) {
+//            start();
+//        } else
+//            cancel();
+//    }
+//
+//    public void start() {
+//        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//        int interval = 1000;
+//        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+//        Log.e("Alarm", "started");
+//    }
+//
+//    public void cancel() {
+//        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//        manager.cancel(pendingIntent);
+//        Log.e("Alarm", "Canceled");
+//    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
